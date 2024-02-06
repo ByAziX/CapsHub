@@ -8,8 +8,8 @@ const ipfsClient = new TernoaIPFS(new URL(process.env.IPFS_GATEWAY!), process.en
 
 
 const fetchIPFSMetadataCollection = async (offchainData: string): Promise<{ metadata: any; bannerUrl: string, profileUrl: string }> => {
-    const defaultBannerHash = "Qm..."; // Remplacez par un hash IPFS par défaut pour la bannière
-    const defaultProfileHash = "Qm..."; // Remplacez par un hash IPFS par défaut pour l'image de profil
+    const defaultBannerHash = "QmNsqeXwMtpfpHTtCJHMMWp924HrGL85AnVjEEmDHyUkBg"; // Remplacez par un hash IPFS par défaut pour la bannière
+    const defaultProfileHash = "QmNsqeXwMtpfpHTtCJHMMWp924HrGL85AnVjEEmDHyUkBg"; // Remplacez par un hash IPFS par défaut pour l'image de profil
     const cacheKey = `ipfs:collection:${offchainData}`;
     const cachedData = await cache.get(cacheKey);
   
