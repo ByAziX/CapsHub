@@ -73,17 +73,17 @@ const IndexPage = () => {
           </Button>
         </Box>
         {lastNft && (
-          <Box flex="1" ml={{ base: 0, md: 5 }}>
+          <Box flex="1" ml={{ base: 0, md: 50 }}>
             <NFTCard
               key={lastNft.nftId}
               item={lastNft}
-              width={"60%"}
+              width={"100%"}
               height={"100%"}
             />
           </Box>
         )}
       </Flex>
-      
+
 
       <Heading size="lg" display="flex" alignItems="center">
         <Text as="span" fontWeight="bold">Featured Collections</Text>
