@@ -1,4 +1,4 @@
-// Carousel.js ou Carousel.tsx si vous utilisez TypeScript
+//Carousel.tsx 
 
 import React, { useRef, useState, useEffect } from 'react';
 import { Box, IconButton, Flex } from '@chakra-ui/react';
