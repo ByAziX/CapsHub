@@ -1,7 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { WalletConnectProvider } from '../components/navbar/WalletConnectProvider';
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Analytics } from '@vercel/analytics/react';
+
 
 
 import theme from "../theme";
@@ -18,8 +17,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
       <Footer />
       </WalletConnectProvider>
-      <SpeedInsights />
-      <Analytics />
     </ChakraProvider>
 
   );
