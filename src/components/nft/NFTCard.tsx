@@ -46,7 +46,7 @@ const NFTCard: React.FC<{ item: NFTEntity; width?: string | number; height?: str
       height={height}
       transition={{ duration: 0.2 }}
     >
-      <Box position="relative" height={width} overflow="hidden">
+      <Box position="relative" height={width}  overflow="hidden">
         {isLoading && <Skeleton height={width} />}
         <Image
           src={item?.mediaUrl || 'https://via.placeholder.com/100'}
@@ -54,7 +54,7 @@ const NFTCard: React.FC<{ item: NFTEntity; width?: string | number; height?: str
           fallbackSrc='https://via.placeholder.com/100'
           onLoad={handleImageLoaded}
           onError={handleImageError}
-          style={{ display: isLoading ? 'none' : 'block', width: '100%', height: '100%', objectFit: 'contain' }}
+          style={{ display: isLoading ? 'none' : 'block', width: "100%", height: "100%", objectFit: 'contain' }}
         />
       </Box>
       <VStack p="2" align="left" spacing={1}>

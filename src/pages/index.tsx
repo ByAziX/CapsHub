@@ -77,8 +77,8 @@ const IndexPage = () => {
             <NFTCard
               key={lastNft.nftId}
               item={lastNft}
-              width={"auto"}
-              height={"auto"}
+              width={"60%"}
+              height={"100%"}
             />
           </Box>
         )}
