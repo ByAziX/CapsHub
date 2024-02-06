@@ -83,6 +83,7 @@ const IndexPage = () => {
           </Box>
         )}
       </Flex>
+      
 
       <Heading size="lg" display="flex" alignItems="center">
         <Text as="span" fontWeight="bold">Featured Collections</Text>
