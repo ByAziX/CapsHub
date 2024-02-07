@@ -78,7 +78,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
   width={50}
   height={50}
   priority={true}
-  style={{ borderRadius: '50%' }}
+  style={{ borderRadius: '30%' }}
   sizes='50px'
   quality={55}
 />
