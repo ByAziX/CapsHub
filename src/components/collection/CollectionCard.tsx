@@ -56,7 +56,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
         </>
       ) : (
         <>
-          <AspectRatio ratio={4 / 3}>
+          <AspectRatio ratio={3 / 2}>
           <Image
   src={item?.bannerUrl || 'https://via.placeholder.com/100'}
   alt={`Banner for collection ${item?.collectionId}`}

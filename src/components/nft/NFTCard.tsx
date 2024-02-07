@@ -5,6 +5,7 @@ import NextLink from 'next/link';
 import { NFTEntity } from '../../interfaces/interfaces';
 import { motion } from 'framer-motion';
 
+
 const MotionBox = motion(Box);
 
 // Corrigé pour utiliser `item` comme prop au lieu de `nft`
