@@ -42,8 +42,8 @@ const NFTCard: React.FC<{ item: NFTEntity; width?: string | number; height?: str
       whileHover={{ scale: 1.02, shadow: "lg" }}
       onClick={handleBoxClick}
       cursor="pointer"
-      width={width} 
-      height={height}
+      width={{base:"100%", md:width}}
+      height={{base:"100%", md:height}}
       transition={{ duration: 0.2 }}
     >
       <Box position="relative" height={width}  overflow="hidden">
