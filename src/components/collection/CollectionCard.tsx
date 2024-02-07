@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Image, Text, useColorModeValue, Badge, VStack, HStack, AspectRatio, Skeleton
+  Box, Text, useColorModeValue, Badge, VStack, HStack, AspectRatio, Skeleton
 } from '@chakra-ui/react';
 import { CollectionEntity } from '../../interfaces/interfaces';
 import { motion } from 'framer-motion';
+import Image from 'next/image'; // Importer Image de next/image
 
 const MotionBox = motion(Box);
 
@@ -20,15 +21,13 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
 }) => {
   const bgColor = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.800', 'white');
-  const [isLoading, setIsLoading] = useState(true); // Initial loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (item) {
       setIsLoading(false);
     }
-  }
-  , [item]);
-
+  }, [item]);
 
   const handleCollectionClick = () => {
     window.location.href = `/collection/${item?.collectionId}`;
@@ -52,32 +51,36 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
     >
       {isLoading ? (
         <>
-          <Skeleton width="100%" height="200px" /> {/* Skeleton for banner image */}
-          <VStack p="2" align="left" spacing={4}>
-            <Skeleton borderRadius="full" boxSize="50px" /> {/* Skeleton for profile image */}
-            <Skeleton height="20px" width="70%" /> {/* Skeleton for title */}
-            <Skeleton height="15px" width="60%" /> {/* Skeleton for badges */}
-            <Skeleton height="15px" width="50%" /> {/* Additional skeleton for any other text or badges */}
-          </VStack>
+          <Skeleton width="100%" height="200px" />
+          {/* Autres skeletons */}
         </>
       ) : (
         <>
           <AspectRatio ratio={4 / 3}>
-            <Image
-              src={item?.bannerUrl || 'https://via.placeholder.com/100'}
-              alt={`Banner for collection ${item?.collectionId || 'unknown'}`}
-              objectFit="contain"
-            />
+          <Image
+  src={item?.bannerUrl || 'https://via.placeholder.com/100'}
+  alt={`Banner for collection ${item?.collectionId}`}
+  width={300}
+  height={200}
+  priority={true}
+  quality={55}
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+/>
           </AspectRatio>
+          {/* Le reste du composant reste inchangé */}
           <VStack p="2" align="left" spacing={1}>
+            {/* Pour l'image de profil, assurez-vous d'encapsuler dans une div positionnée si nécessaire */}
             <HStack spacing={2} align="center">
+              <div style={{ position: 'relative', width: '50px', height: '50px', borderRadius: '50%', overflow: 'hidden' }}>
               <Image
-                borderRadius="full"
-                boxSize="50px"
-                src={item?.profileUrl || 'https://via.placeholder.com/50'}
-                alt={`Logo for collection ${item?.collectionId}`}
-                fallbackSrc='https://via.placeholder.com/50'
-              />
+  src={item?.profileUrl || 'https://via.placeholder.com/50'}
+  alt={`Logo for collection ${item?.collectionId}`}
+  width={50}
+  height={50}
+  sizes='50px'
+  quality={55}
+/>
+              </div>
               <Text fontSize="lg" fontWeight="bold">{item.name}</Text>
             </HStack>
             <HStack>
