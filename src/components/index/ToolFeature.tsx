@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Heading, Text, Icon, VStack, useColorModeValue} from '@chakra-ui/react';
+import { Box, Heading, Text, Icon, VStack, useColorModeValue } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
-// Conversion de Box en MotionBox pour les animations
 const MotionBox = motion(Box);
 
 const ToolFeature = ({ title, icon, description }) => (
@@ -17,10 +16,11 @@ const ToolFeature = ({ title, icon, description }) => (
     shadow="lg"
     align="center"
     justify="center"
+    // Adding a min-height to the description Text might be necessary if dynamic content is used
   >
-    <Icon as={icon} w={10} h={10} color={useColorModeValue('purple.500', 'purple.200')} /> {/* Ajustez la couleur selon le thème */}
+    <Icon as={icon} w={10} h={10} color={useColorModeValue('purple.500', 'purple.200')} />
     <Heading size="md" textAlign="center">{title}</Heading>
-    <Text textAlign="center">{description}</Text>
+    <Text textAlign="center" minH="4em">{description}</Text> {/* Example adjustment */}
   </VStack>
 );
 

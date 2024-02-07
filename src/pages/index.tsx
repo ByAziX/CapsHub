@@ -12,13 +12,11 @@ import {
 import dynamic from 'next/dynamic';
 import { CollectionEntity, NFTEntity } from '../interfaces/interfaces';
 import Carousel from '../components/index/Carousel';
+import SiteTools from '../components/index/SiteTools';
+import FAQSection from '../components/index/FAQSection';
+import NFTCard  from '../components/nft/NFTCard';
+import CollectionCard from '../components/collection/CollectionCard';
 
-
-// Chargement dynamique des composants
-const FAQSection = dynamic(() => import('../components/index/FAQSection'));
-const SiteTools = dynamic(() => import('../components/index/SiteTools'));
-const CollectionCard = dynamic(() => import('../components/collection/CollectionCard'));
-const NFTCard = dynamic(() => import('../components/nft/NFTCard'));
 
 
 const IndexPage = () => {
@@ -88,20 +86,18 @@ const IndexPage = () => {
       <Heading size="lg" display="flex" alignItems="center">
         <Text as="span" fontWeight="bold">Featured Collections</Text>
       </Heading>
-      {!isLoading && (
         <VStack spacing={5} my="10">
           <Carousel items={collections} CardComponent={CollectionCard} />
         </VStack>
-      )}
+    
 
       <Heading size="lg" display="flex" alignItems="center">
         <Text as="span" fontWeight="bold">Last NFTs on Sales</Text>
       </Heading>
-      {!isLoading && (
         <VStack spacing={5} my="10">
           <Carousel items={nfts} CardComponent={NFTCard} />
         </VStack>
-      )}
+
 
       <SiteTools />
       <FAQSection />
