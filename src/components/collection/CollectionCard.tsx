@@ -71,16 +71,16 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
           <VStack p="2" align="left" spacing={1}>
             {/* Pour l'image de profil, assurez-vous d'encapsuler dans une div positionnée si nécessaire */}
             <HStack spacing={2} align="center">
-              <div style={{ position: 'relative', width: '50px', height: '50px', borderRadius: '50%', overflow: 'hidden' }}>
+              
               <Image
   src={item?.profileUrl || 'https://via.placeholder.com/50'}
   alt={`Logo for collection ${item?.collectionId}`}
   width={50}
   height={50}
+  priority={true}
   sizes='50px'
   quality={55}
 />
-              </div>
               <Text fontSize="lg" fontWeight="bold">{item.name}</Text>
             </HStack>
             <HStack>
