@@ -51,45 +51,48 @@ const NFTCard: React.FC<{ item: NFTEntity; width?: string | number; height?: str
       <Box position="relative" height={width}  overflow="hidden">
         {isLoading && <Skeleton height={width} />}
         {video_url && ( // Ajout de la condition pour afficher la vidéo
-          <iframe src={item?.mediaUrl} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen></iframe>
+          <iframe src={item?.mediaUrl} width="100%" height="100%" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen></iframe>
         ) }
-        {!isLoading && !video_url && ( // Ajout de la condition pour afficher l'image
+        {!isLoading && !video_url && ( 
           <Image
             src={item?.mediaUrl || 'https://via.placeholder.com/100'}
             alt={item?.metadata?.title || 'NFT Image'}
             quality={55}
             priority={true}
-            style={{ objectFit: 'contain' }}
+            style={{ objectFit: 'contain'}}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             fill={true}
+            
+
 
           />
         )}
       </Box>
       <VStack p="2" align="left" spacing={1}>
         {item?.metadata?.title && (
-          <Text fontSize="md" fontWeight="bold">
+          <Text fontSize="md" fontWeight="bold" isTruncated>
             {item.metadata.title}
           </Text>
         )}
         <Tooltip label="NFT id" aria-label="NFT id">
-          <Link as={NextLink} href={`/nft/${item?.nftId}`} passHref>
+          <Link as={NextLink} href={`/nft/${item?.nftId}`} passHref isTruncated>
             NFT N°{item?.nftId}
           </Link>
         </Tooltip>
 
         {item?.collection && (
           <Tooltip label="NFT collection id" aria-label="NFT collection">
-            <Link as={NextLink} href={`/collection/${item?.collection?.collectionId}`} passHref>
+            <Link as={NextLink} href={`/collection/${item?.collection?.collectionId}`} passHref isTruncated>
                 Collection N°{item?.collection.collectionId}
             </Link>
           </Tooltip>
         )}
 
         {item?.isListed && (
-          <Badge colorScheme="green">Listed for sale</Badge>
+          <Badge colorScheme="green" isTruncated>Listed for sale</Badge>
         )}
         {item?.priceRounded && (
-          <Text fontSize="xs" fontWeight="bold">
+          <Text fontSize="xs" fontWeight="bold" isTruncated>
             Price: {item?.priceRounded} CAPS
           </Text>
         )}
