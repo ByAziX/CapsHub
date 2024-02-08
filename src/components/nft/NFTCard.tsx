@@ -60,7 +60,7 @@ const NFTCard: React.FC<{ item: NFTEntity; width?: string | number; height?: str
             priority={true}
             style={{ objectFit: 'contain'}}
             // 640 x 640, 768 x 768, 1200 x 1200, 1600 x 1600, 2000 x 2000
-            sizes="(max-width: 768px) 10vw, (max-width: 1200px) 50vw, (max-width: 1600px) 33vw, 1s5vw"
+            sizes="(max-width: 768px) 10vw, (max-width: 1200px) 50vw, (max-width: 1600px) 33vw, 15vw"
             fill={true}
             
 
