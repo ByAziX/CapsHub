@@ -4,7 +4,7 @@ import { FaTwitter, FaInstagram, FaLinkedin, FaGithub } from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   return (
-    <Box as="footer" bg={useColorModeValue('white', 'purple.400')} color={useColorModeValue('grey.700', 'grey.500')} mt="10">
+    <Box as="footer"  mt="10">
       <Container maxW="container.xl" py="5">
         <Flex direction={{ base: 'column', md: 'row' }} align="center" justify="space-between">
           <Text>&copy; {new Date().getFullYear()} NFT Marketplace. All rights reserved.</Text>
