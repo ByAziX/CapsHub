@@ -87,7 +87,7 @@ const IndexPage = () => {
         <Text as="span" fontWeight="bold">Featured Collections</Text>
       </Heading>
         <VStack spacing={5} my="10">
-          <Carousel items={collections} CardComponent={CollectionCard} />
+          <Carousel items={collections} CardComponent={CollectionCard} isLoading={isLoading} />
         </VStack>
     
 
@@ -95,7 +95,7 @@ const IndexPage = () => {
         <Text as="span" fontWeight="bold">Last NFTs on Sales</Text>
       </Heading>
         <VStack spacing={5} my="10">
-          <Carousel items={nfts} CardComponent={NFTCard} />
+          <Carousel items={nfts} CardComponent={NFTCard} isLoading={isLoading}/>
         </VStack>
 
 
