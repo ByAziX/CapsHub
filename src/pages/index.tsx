@@ -9,13 +9,13 @@ import {
   VStack,
   useColorModeValue,
 } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
 import { CollectionEntity, NFTEntity } from '../interfaces/interfaces';
 import Carousel from '../components/index/Carousel';
-import SiteTools from '../components/index/SiteTools';
 import FAQSection from '../components/index/FAQSection';
-import NFTCard  from '../components/nft/NFTCard';
+import NFTCard from '../components/nft/NFTCard';
+import SiteTools from '../components/index/SiteTools';
 import CollectionCard from '../components/collection/CollectionCard';
+
 
 
 
