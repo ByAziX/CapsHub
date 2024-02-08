@@ -61,8 +61,8 @@ const Carousel = ({ items, CardComponent, isLoading }) => {
         scrollBehavior="smooth"
       >
         {isLoading ? renderSkeletons() : items.map((item, index) => (
-          <Box key={index} p="4">
-            <CardComponent item={item} />
+          <Box p="4">
+            <CardComponent key={index} item={item} />
           </Box>
         ))}
       </Box>

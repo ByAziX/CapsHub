@@ -33,7 +33,8 @@ const IndexPage = () => {
         const collectionsRes = await fetch('/api/collections?limit=6&offset=0');
         const nftsData = await nftsRes.json();
         const collectionsData = await collectionsRes.json();
-        
+        setIsLoading(true);
+      
         setNfts(nftsData.nfts);
         setLastNft(nftsData.nfts[0]); // Assumant que le premier NFT est le dernier listé
         setCollections(collectionsData.collections);
