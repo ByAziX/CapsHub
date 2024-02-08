@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Image, Text, Skeleton, VStack, useColorModeValue, Tooltip, Link, Badge } from '@chakra-ui/react';
+import { Box, Text, Skeleton, VStack, useColorModeValue, Tooltip, Link, Badge } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { NFTEntity } from '../../interfaces/interfaces';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 
 const MotionBox = motion(Box);
@@ -24,13 +25,13 @@ const NFTCard: React.FC<{ item: NFTEntity; width?: string | number; height?: str
     router.push(`/nft/${item.nftId}`);
   };
 
-  const handleImageLoaded = () => {
-    setIsLoading(false);
-  };
+  useEffect(() => {
+    if (item) {
+      setIsLoading(false);
+    }
+  }, [item]);
 
-  const handleImageError = () => {
-    setIsLoading(false);
-  };
+  const video_url = item.metadata.properties.media.type == "video/mp4" ? true : false;
 
   return (
     <MotionBox
@@ -49,14 +50,20 @@ const NFTCard: React.FC<{ item: NFTEntity; width?: string | number; height?: str
     >
       <Box position="relative" height={width}  overflow="hidden">
         {isLoading && <Skeleton height={width} />}
-        <Image
-          src={item?.mediaUrl || 'https://via.placeholder.com/100'}
-          alt='NFT Image'
-          fallbackSrc='https://via.placeholder.com/100'
-          onLoad={handleImageLoaded}
-          onError={handleImageError}
-          style={{ display: isLoading ? 'none' : 'block', width: "100%", height: "100%", objectFit: 'contain' }}
-        />
+        {video_url && ( // Ajout de la condition pour afficher la vidéo
+          <iframe src={item?.mediaUrl} width="100%" height="100%" frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen></iframe>
+        ) }
+        {!isLoading && !video_url && ( // Ajout de la condition pour afficher l'image
+          <Image
+            src={item?.mediaUrl || 'https://via.placeholder.com/100'}
+            alt={item?.metadata?.title || 'NFT Image'}
+            quality={55}
+            priority={true}
+            style={{ objectFit: 'contain' }}
+            fill={true}
+
+          />
+        )}
       </Box>
       <VStack p="2" align="left" spacing={1}>
         {item?.metadata?.title && (
