@@ -35,6 +35,11 @@ export interface CollectionEntity {
     profile_image: string;
     bannerUrl: string;
     profileUrl: string;
+    profile_image_file:{
+      hash: string;
+      type: string;
+      size: number;
+    }
 
 
   }

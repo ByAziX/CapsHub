@@ -77,8 +77,9 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
                 width={50}
                 height={50}
                 quality={55}
-                style={{ borderRadius: '50%',objectFit: 'contain' }}
+                style={{ borderRadius: '20%',width:"40px",height:"auto" }}
                 loading='lazy'
+
 
               />
               <Tooltip label={item.name} aria-label="Collection name">
