@@ -10,7 +10,7 @@ const NFTList: React.FC<NFTListProps> = ({ nfts, totalCount,sortBy }) => {
 
   return (
     <VStack spacing={5} my="10">
-      <Heading as="h2" size="xl">
+      <Heading as="h2" size="lg">
     {`Explore ${totalCount} NFTs`}
   </Heading>
   <SortFilterNFT value={sortBy} />

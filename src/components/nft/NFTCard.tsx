@@ -41,7 +41,7 @@ const NFTCard: React.FC<{ item: NFTEntity; width?: string | number; height?: str
       bg={bgColor}
       color={textColor}
       shadow="md"
-      whileHover={{ scale: 1.02, shadow: "lg" }}
+      whileHover={{ scale: 1.02 }}
       onClick={handleBoxClick}
       cursor="pointer"
       width={{base:"100%", md:width}}
@@ -57,10 +57,10 @@ const NFTCard: React.FC<{ item: NFTEntity; width?: string | number; height?: str
           <Image
             src={item?.mediaUrl || 'https://via.placeholder.com/100'}
             alt={item?.metadata?.title || 'NFT Image'}
-            quality={55}
             priority={true}
             style={{ objectFit: 'contain'}}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            // 640 x 640, 768 x 768, 1200 x 1200, 1600 x 1600, 2000 x 2000
+            sizes="(max-width: 768px) 10vw, (max-width: 1200px) 50vw, (max-width: 1600px) 33vw, 5vw"
             fill={true}
             
 
