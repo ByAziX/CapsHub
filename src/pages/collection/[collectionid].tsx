@@ -12,14 +12,15 @@ interface CollectionDetailsPageProps {
   nfts: NFTEntity[];
   totalCount: number;
   sortBy: string;
+  initialIsLoading: boolean;
 }
 
 const DEFAULT_LIMIT = 24;
 
-const CollectionDetailsPage: NextPage<CollectionDetailsPageProps> = ({ collection, collectionid, nfts, totalCount, sortBy }) => {
+const CollectionDetailsPage: NextPage<CollectionDetailsPageProps> = ({ collection, collectionid, nfts, totalCount, sortBy, initialIsLoading }) => {
   const [loadedNfts, setLoadedNfts] = useState(nfts);
   const [offset, setOffset] = useState(DEFAULT_LIMIT);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(initialIsLoading);
   const sentinel = useRef<HTMLDivElement | null>(null);
   const inputFocusBorderColor = useColorModeValue('purple.500', 'purple.200');
   const logoSize = useBreakpointValue({ base: '50px', md: '150px' });
@@ -80,7 +81,7 @@ const CollectionDetailsPage: NextPage<CollectionDetailsPageProps> = ({ collectio
     </Box>
     <Box>
         {/* NFT List */}
-        <NFTList nfts={loadedNfts} totalCount={totalCount} sortBy={sortBy} />
+        <NFTList nfts={loadedNfts} totalCount={totalCount} sortBy={sortBy} initialIsLoading={isLoading} />
         {isLoading && (
           <Flex justify="center" align="center">
             <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color={inputFocusBorderColor} size="xl" />
@@ -110,6 +111,7 @@ export const getServerSideProps: GetServerSideProps<CollectionDetailsPageProps> 
       nfts,
       totalCount,
       sortBy,
+      initialIsLoading: false,
     },
   };
 };

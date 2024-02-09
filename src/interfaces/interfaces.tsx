@@ -114,7 +114,7 @@ export interface NFTListProps {
     nfts: NFTEntity[];
     totalCount: number;
     sortBy : string;
-    isLoading: boolean;
+    initialIsLoading: boolean;
   }
 
 export interface CollectionListProps {
