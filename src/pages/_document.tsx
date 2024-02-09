@@ -34,6 +34,7 @@ export default class Document extends NextDocument {
         <meta name="msapplication-TileColor" content="#319795" />
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="theme-color" content="#319795" />
+        
 
         <title>CapsHub</title>
         <body>
