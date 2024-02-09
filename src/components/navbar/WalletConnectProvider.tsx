@@ -12,12 +12,15 @@ import Client from "@walletconnect/sign-client";
 import { PairingTypes, SessionTypes } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/legacy-modal";
 import { ERROR } from "@walletconnect/utils";
+import { isMobile } from '@walletconnect/legacy-utils'
+
 import {
   cryptoWaitReady,
   decodeAddress,
   signatureVerify,
 } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";
+import { WaitUntil, buyItNowTx, buyNft, buyNftTx, initializeApi, makeRentOfferTx } from "ternoa-js";
 
 const DEFAULT_APP_METADATA = {
   name: "TeamT",
@@ -39,6 +42,7 @@ const requiredNamespaces = {
 
 interface WalletConnectContextType {
   connect: (pairing?: any) => Promise<SessionTypes.Struct | null>;
+  buyNftFunction: (nftId: string, nftPrice: string) => Promise<void>;
 }
 
 // Création du contexte avec un type spécifié
@@ -128,7 +132,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
       setIsInitializing(true);
       const _client = await Client.init({
         relayUrl: "wss://wallet-connectrelay.ternoa.network/",
-        projectId: "e8f6f7d41ff88cd96a21ce580f018401",
+        projectId: process.env.WalletConnectID,
         metadata: DEFAULT_APP_METADATA,
       });
       await subscribeToEvents(_client);
@@ -155,7 +159,10 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         setIsError(false);
 
         if (uri) {
+          if (!isMobile()){
           QRCodeModal.open(uri, () => {});
+          } else {
+            window.location.replace(`ternoa-wallet://wc?uri=${uri}`)          }
         }
         const session = await approval();
         onSessionConnected(session);
@@ -206,17 +213,6 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     setIsLoading(true);
     setIsError(false);
 
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    const day = currentDate.getDate();
-    const hours = currentDate.getHours();
-    const minutes = currentDate.getMinutes();
-    const seconds = currentDate.getSeconds();
-
-    const date = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
-
-  
     setMessage(message)
     try {
       const response = await client.request<string>({
@@ -264,10 +260,60 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
       createClient();
     }
   }, [client, createClient]);
+
+
   
+  
+  const buyNftFunction = useCallback(async (nftId, nftPrice) => {
+    if (typeof client === "undefined") {
+      throw new Error("WalletConnect is not initialized");
+    }
+    if (typeof address === "undefined") {
+      throw new Error("Not connected");
+    }
+    if (typeof session === "undefined") {
+      throw new Error("Session not connected");
+    }
+    setIsLoading(true);
+    setIsError(false);
+    await initializeApi("wss://alphanet.ternoa.com");
+    console.log(nftId, nftPrice);
+    
+    const tx = await buyNftTx(nftId, nftPrice);
+    setIsLoading(true)
+    try {
+      const response = await client.request<string>({
+        chainId: TERNOA_ALPHANET_CHAIN,
+        topic: session.topic,
+        request: {
+          method: 'sign_message',
+          params: {
+            pubKey: address,
+            request: {
+              hash: tx,
+              nonce: -1,
+              submit: true,
+
+            },
+          },
+        },
+      });
+      const txHash = JSON.parse(response);
+      if (txHash) {
+        console.log('OK')
+      }
+      setIsLoading(false)
+    } catch {
+      setIsError(true);
+      console.log("ERROR: invalid signature");
+      
+    } finally {
+      setIsLoading(false);
+    }
+  }, [client, session, address]);
 
   return (
-      <WalletConnectContext.Provider value={{ connect }}>
+      <WalletConnectContext.Provider value={{ connect,buyNftFunction }}>
         {children}
       </WalletConnectContext.Provider>
   );

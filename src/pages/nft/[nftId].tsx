@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { getNftData } from '../../services/nftService';
 import NextLink from 'next/link';
+import { useWalletConnect } from '../../components/navbar/WalletConnectProvider';
 
 
 
@@ -26,6 +27,8 @@ const NFTDetailsPage = ({ nft }) => {
   const bgColor = useColorModeValue('light.bg', 'dark.bg');
   const textColor = useColorModeValue('light.text', 'dark.text');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const { buyNftFunction } = useWalletConnect();
+
 
   console.log('NFT details:', nft);
 
@@ -65,18 +68,18 @@ const NFTDetailsPage = ({ nft }) => {
               {nft.metadata?.description || 'NFT Description'}
             </Text>
             {nft.collection && (
-            <Badge colorScheme="purple" p={2}>
-              <Link as={NextLink} href={`../collection/${nft.collection.collectionId}`} passHref>
-              Collection #{nft.collection.collectionId}
-              </Link>
-            </Badge>
+              <Badge colorScheme="purple" p={2}>
+                <Link as={NextLink} href={`../collection/${nft.collection.collectionId}`} passHref>
+                  Collection #{nft.collection.collectionId}
+                </Link>
+              </Badge>
             )}
             <Divider borderColor={borderColor} my={4} />
             {nft.collection && !nft.collection.isClosed && (
-            <Alert status="warning" borderRadius="md">
-              <AlertIcon />
-              This NFT belongs to a collection not closed!
-            </Alert>
+              <Alert status="warning" borderRadius="md">
+                <AlertIcon />
+                This NFT belongs to a collection not closed!
+              </Alert>
             )}
             <Text fontWeight="bold">Owner:</Text>
             <Link as={NextLink} href={`../profile/${nft.owner}`} passHref>
@@ -92,9 +95,11 @@ const NFTDetailsPage = ({ nft }) => {
               </Text></>
             )}
             <Flex>
-              <Button colorScheme="purple" mr={3}>
+
+              <Button colorScheme="purple" marginRight={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
                 Buy Now
               </Button>
+
               <Button variant="outline" colorScheme="purple">
                 Make Offer
               </Button>
@@ -113,7 +118,7 @@ export async function getServerSideProps(context) {
     return { props: { nft } };
   } catch (error) {
     console.error('Error fetching NFT details:', error);
-    
+
     return { props: { nft: null } };
   }
 }
