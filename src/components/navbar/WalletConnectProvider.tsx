@@ -42,7 +42,7 @@ const requiredNamespaces = {
 
 interface WalletConnectContextType {
   connect: (pairing?: any) => Promise<SessionTypes.Struct | null>;
-  buyNftFunction: (nftId: string, nftPrice: string) => Promise<void>;
+  //buyNftFunction: (nftId: string, nftPrice: string) => Promise<void>;
 }
 
 // Création du contexte avec un type spécifié
@@ -315,7 +315,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
   }, [client, session, address]);
 */
   return (
-    <WalletConnectContext.Provider value={{ connect, buyNftFunction }}>
+    <WalletConnectContext.Provider value={{ connect }}>
       {children}
     </WalletConnectContext.Provider>
   );
