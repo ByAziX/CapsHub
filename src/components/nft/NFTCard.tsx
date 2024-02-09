@@ -52,6 +52,7 @@ const NFTCard: React.FC<{
           <Skeleton height={width} />
         ) : video_url ? (
           <iframe
+            title={item?.metadata?.title || 'NFT Video'}
             src={item?.mediaUrl}
             width="100%"
             height="100%"

@@ -7,6 +7,7 @@ export default class Document extends NextDocument {
       <Html>
         <Head />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <html lang="en" />
         <meta charSet="utf-8" />
         <meta name="description" content="CapsHub" />
         <meta name="keywords" content="CapsHub" />
