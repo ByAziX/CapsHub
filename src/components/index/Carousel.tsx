@@ -48,6 +48,15 @@ const Carousel = ({ items, CardComponent, isLoading }) => {
         w="full"
         p={2}
         scrollBehavior="smooth"
+        css={{
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+        }}
+        sx={{
+          scrollbarWidth: 'none', // Pour les navigateurs qui supportent cette propriété, comme Firefox.
+          msOverflowStyle: 'none',  // Pour les navigateurs Internet Explorer et Edge.
+        }}
       >
         
         {items.map((item, index) => (
