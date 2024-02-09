@@ -56,7 +56,7 @@ const ProfilePage: NextPage<ProfilePageProps> = ({ nfts, totalCount, sortBy, pro
 
   return (
     <Box>
-      <NFTList nfts={loadedNfts} totalCount={totalCount} sortBy={sortBy} />
+      <NFTList nfts={loadedNfts} totalCount={totalCount} sortBy={sortBy} isLoading={isLoading}/>
       {isLoading && (
         <Flex justify="center" align="center" my="20px">
           <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color={inputFocusBorderColor} size="xl" />
@@ -79,6 +79,7 @@ export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (c
       totalCount,
       sortBy,
       profileid,
+      isLoading: false,
     },
   };
 };
