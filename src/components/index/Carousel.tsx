@@ -28,17 +28,6 @@ const Carousel = ({ items, CardComponent, isLoading }) => {
     scrollRef.current.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
   };
 
-  const renderSkeletons = () => (
-    Array.from({ length: items.length || 5 }).map((_, index) => (
-      <Box key={index} p="4" borderWidth="1px" borderRadius="lg" margin={4} overflow="hidden" width="220px" height="340px">
-      <Skeleton height="160px" />
-      <SkeletonText mt="4" noOfLines={1} />
-      <Skeleton mt="4" height="20px" width="80%" />
-      <Skeleton mt="2" height="20px" width="60%" />
-    </Box>
-      
-    ))
-  );
 
   return (
     <Flex alignItems="center" justifyContent="center" position="relative" w="full">
@@ -60,9 +49,9 @@ const Carousel = ({ items, CardComponent, isLoading }) => {
         p={2}
         scrollBehavior="smooth"
       >
-        {isLoading ? renderSkeletons() : items.map((item, index) => (
-          <Box p="4">
-            <CardComponent key={index} item={item} />
+        {items.map((item, index) => (
+          <Box key={index} p="4">
+            <CardComponent item={item} initialIsLoading={isLoading} />
           </Box>
         ))}
       </Box>

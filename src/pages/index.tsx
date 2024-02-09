@@ -16,36 +16,50 @@ import NFTCard from '../components/nft/NFTCard';
 import SiteTools from '../components/index/SiteTools';
 import CollectionCard from '../components/collection/CollectionCard';
 
-
-
-
 const IndexPage = () => {
-  const bgGradient = useColorModeValue('linear(to-l, #7928CA, #9A4DFF)', 'linear(to-l, #9A4DFF, #D6A4FF)');
+  const bgGradient = useColorModeValue(
+    'linear(to-l, #7928CA, #9A4DFF)',
+    'linear(to-l, #9A4DFF, #D6A4FF)'
+  );
   const [nfts, setNfts] = useState<NFTEntity[]>([]);
   const [lastNft, setLastNft] = useState<NFTEntity | null>(null);
   const [collections, setCollections] = useState<CollectionEntity[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingNFTs, setIsLoadingNFTs] = useState(true);
+  const [isLoadingCollections, setIsLoadingCollections] = useState(true);
 
+  // Charger les données des NFTs
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchNFTs = async () => {
       try {
-        const nftsRes = await fetch('/api/nfts?limit=6&offset=0');
-        const collectionsRes = await fetch('/api/collections?limit=6&offset=0');
-        const nftsData = await nftsRes.json();
-        const collectionsData = await collectionsRes.json();
-        setIsLoading(true);
-      
-        setNfts(nftsData.nfts);
-        setLastNft(nftsData.nfts[0]); // Assumant que le premier NFT est le dernier listé
-        setCollections(collectionsData.collections);
+        const res = await fetch('/api/nfts?limit=6&offset=0');
+        const data = await res.json();
+        setNfts(data.nfts);
+        setLastNft(data.nfts[0]); // Assumant que le premier NFT est le dernier listé
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching NFTs:", error);
       } finally {
-        setIsLoading(false);
+        setIsLoadingNFTs(false);
       }
     };
 
-    fetchData();
+    fetchNFTs();
+  }, []);
+
+  // Charger les données des collections
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const res = await fetch('/api/collections?limit=6&offset=0');
+        const data = await res.json();
+        setCollections(data.collections);
+      } catch (error) {
+        console.error("Error fetching collections:", error);
+      } finally {
+        setIsLoadingCollections(false);
+      }
+    };
+
+    fetchCollections();
   }, []);
 
   return (
@@ -59,7 +73,10 @@ const IndexPage = () => {
       >
         <Box flex="1" mr={{ base: 0, md: 5 }}>
           <Heading as="h2" size="xl" mb={4}>
-            Collect & <Text as="span" bgClip="text" bgGradient={bgGradient} fontWeight="extrabold">Sell Super Rare NFTs</Text>
+            Collect &{' '}
+            <Text as="span" bgClip="text" bgGradient={bgGradient} fontWeight="extrabold">
+              Sell Super Rare NFTs
+            </Text>
           </Heading>
           <Text fontSize="lg" mb={4}>
             Produce an exclusive NFT collection of over 10,000 items by uploading the necessary layers, and prepare to market your collection for sale.
@@ -71,34 +88,30 @@ const IndexPage = () => {
             Join Discord
           </Button>
         </Box>
-        {lastNft && (
-          <Box flex="1" ml={{ base: 0, md: 50 }}>
+        <Box flex="1" ml={{ base: 0, md: 50 }}>
+          {lastNft && (
             <NFTCard
-              key={lastNft.nftId}
+              key={lastNft?.nftId}
               item={lastNft}
-              width={"100%"}
-              height={"100%"}
+              initialIsLoading={isLoadingNFTs}
             />
-          </Box>
-        )}
+          )}
+        </Box>
       </Flex>
 
-
-      <Heading size="lg" display="flex" alignItems="center">
+      <Heading size="lg" display="flex" alignItems="center" mb={4}>
         <Text as="span" fontWeight="bold">Featured Collections</Text>
       </Heading>
-        <VStack spacing={5} my="10">
-          <Carousel items={collections} CardComponent={CollectionCard} isLoading={isLoading} />
-        </VStack>
-    
+      <VStack spacing={5} my={10}>
+        <Carousel items={collections} CardComponent={CollectionCard} isLoading={isLoadingCollections} />
+      </VStack>
 
-      <Heading size="lg" display="flex" alignItems="center">
-        <Text as="span" fontWeight="bold">Last NFTs on Sales</Text>
+      <Heading size="lg" display="flex" alignItems="center" mb={4}>
+        <Text as="span" fontWeight="bold">Last NFTs on Sale</Text>
       </Heading>
-        <VStack spacing={5} my="10">
-          <Carousel items={nfts} CardComponent={NFTCard} isLoading={isLoading}/>
-        </VStack>
-
+      <VStack spacing={5} my={10}>
+        <Carousel items={nfts} CardComponent={NFTCard} isLoading={isLoadingNFTs}/>
+      </VStack>
 
       <SiteTools />
       <FAQSection />

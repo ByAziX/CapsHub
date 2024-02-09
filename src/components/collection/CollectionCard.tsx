@@ -10,16 +10,18 @@ interface CollectionCardProps {
   item: CollectionEntity;
   width?: string | number;
   height?: string | number;
+  initialIsLoading: boolean;
 }
 
 const CollectionCard: React.FC<CollectionCardProps> = ({
   item,
   width = '300px',
   height = 'auto',
+  initialIsLoading,
 }) => {
   const bgColor = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('gray.800', 'white');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(initialIsLoading);
 
   useEffect(() => {
     if (item) {

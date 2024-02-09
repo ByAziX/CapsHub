@@ -7,7 +7,7 @@ import CollectionCard from '../collection/CollectionCard';
 
 
 
-const CollectionList: React.FC<CollectionListProps> = ({ collections,totalCount }) => {
+const CollectionList: React.FC<CollectionListProps> = ({ collections,totalCount,isLoading }) => {
   
   return (
     <VStack spacing={5} my="10">
@@ -15,7 +15,7 @@ const CollectionList: React.FC<CollectionListProps> = ({ collections,totalCount 
     {`Explore ${totalCount} Collections`}
   </Heading>
         <SimpleGrid columns={{ base: 1, md: 4 }} spacing="4">
-            {collections.map((collection) => <CollectionCard key={collection.collectionId} item={collection} />)}
+            {collections.map((collection) => <CollectionCard key={collection.collectionId} item={collection} initialIsLoading={isLoading}/>)}
         </SimpleGrid>
 
     </VStack>
