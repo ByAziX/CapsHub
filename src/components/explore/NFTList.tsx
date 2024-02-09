@@ -6,7 +6,7 @@ import NFTCard from '../nft/NFTCard';
 import {NFTListProps} from '../../interfaces/interfaces'
 import SortFilterNFT from './SortFilterNFT';
 
-const NFTList: React.FC<NFTListProps> = ({ nfts, totalCount,sortBy,initialIsLoading }) => {
+const NFTList: React.FC<NFTListProps> = ({ nfts, totalCount,sortBy,isLoading }) => {
 
   return (
     <VStack spacing={5} my="10">
@@ -15,7 +15,7 @@ const NFTList: React.FC<NFTListProps> = ({ nfts, totalCount,sortBy,initialIsLoad
   </Heading>
   <SortFilterNFT value={sortBy} />
       <SimpleGrid columns={{ base: 2, md: 6 }} spacing="4">
-        {nfts.map((nft) => <NFTCard key={nft.nftId} item={nft} initialIsLoading={initialIsLoading} />)}
+        {nfts.map((nft) => <NFTCard key={nft.nftId} item={nft} initialIsLoading={isLoading} />)}
       </SimpleGrid>
 
     </VStack>

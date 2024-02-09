@@ -46,7 +46,7 @@ const ExploreCollectionsPage: React.FC<CollectionListProps> = ({ collections, to
 
   return (
     <Box>
-      <CollectionList collections={loadedCollections} totalCount={totalCount} />
+      <CollectionList collections={loadedCollections} totalCount={totalCount} isLoading={isLoading}/>
       {isLoading && (
         <Flex justify="center" align="center" my="2px">
           <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color={spinnerColor} size="xl" />
@@ -63,6 +63,7 @@ export const getServerSideProps: GetServerSideProps<CollectionListProps> = async
     props: {
       collections,
       totalCount,
+      isLoading: false,
     },
   };
 };

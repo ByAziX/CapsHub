@@ -47,7 +47,7 @@ const ExplorePage: React.FC<NFTListProps> = ({ nfts, totalCount, sortBy }) => {
 
   return (
     <Box>
-      <NFTList nfts={loadedNfts} totalCount={totalCount} sortBy={sortBy} initialIsLoading={isLoading} />
+      <NFTList nfts={loadedNfts} totalCount={totalCount} sortBy={sortBy} isLoading={isLoading} />
       {isLoading && (
         <Flex justify="center" align="center" my="2px">
           <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color={inputFocusBorderColor} size="xl" />
@@ -66,7 +66,7 @@ export const getServerSideProps: GetServerSideProps<NFTListProps> = async (conte
       nfts,
       totalCount,
       sortBy,
-      initialIsLoading: false,
+      isLoading: false,
     },
   };
 };

@@ -17,10 +17,10 @@ interface CollectionDetailsPageProps {
 
 const DEFAULT_LIMIT = 24;
 
-const CollectionDetailsPage: NextPage<CollectionDetailsPageProps> = ({ collection, collectionid, nfts, totalCount, sortBy, initialIsLoading }) => {
+const CollectionDetailsPage: NextPage<CollectionDetailsPageProps> = ({ collection, collectionid, nfts, totalCount, sortBy }) => {
   const [loadedNfts, setLoadedNfts] = useState(nfts);
   const [offset, setOffset] = useState(DEFAULT_LIMIT);
-  const [isLoading, setIsLoading] = useState(initialIsLoading);
+  const [isLoading, setIsLoading] = useState(true);
   const sentinel = useRef<HTMLDivElement | null>(null);
   const inputFocusBorderColor = useColorModeValue('purple.500', 'purple.200');
   const logoSize = useBreakpointValue({ base: '50px', md: '150px' });
@@ -81,7 +81,7 @@ const CollectionDetailsPage: NextPage<CollectionDetailsPageProps> = ({ collectio
     </Box>
     <Box>
         {/* NFT List */}
-        <NFTList nfts={loadedNfts} totalCount={totalCount} sortBy={sortBy} initialIsLoading={isLoading} />
+        <NFTList nfts={loadedNfts} totalCount={totalCount} sortBy={sortBy} isLoading={isLoading} />
         {isLoading && (
           <Flex justify="center" align="center">
             <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color={inputFocusBorderColor} size="xl" />
