@@ -64,40 +64,50 @@ const IndexPage = () => {
 
   return (
     <Container maxW="container.xl" p={0}>
-      <Flex
-        direction={{ base: 'column', md: 'row' }}
-        align="center"
-        justify="space-between"
-        my={10}
-        p={5}
-      >
-        <Box flex="1" mr={{ base: 0, md: 5 }}>
-          <Heading as="h2" size="xl" mb={4}>
-            Collect &{' '}
-            <Text as="span" bgClip="text" bgGradient={bgGradient} fontWeight="extrabold">
-              Sell Super Rare NFTs
-            </Text>
-          </Heading>
-          <Text fontSize="lg" mb={4}>
-            Produce an exclusive NFT collection of over 10,000 items by uploading the necessary layers, and prepare to market your collection for sale.
-          </Text>
-          <Button colorScheme="purple" mb={4} marginRight={2}>
-            Let's Start
-          </Button>
-          <Button variant="outline" colorScheme="purple" mb={4}>
-            Join Discord
-          </Button>
-        </Box>
-        <Box flex="1" ml={{ base: 0, md: 50 }}>
-          {lastNft && (
-            <NFTCard
-              key={lastNft?.nftId}
-              item={lastNft}
-              initialIsLoading={isLoadingNFTs}
-            />
-          )}
-        </Box>
+  <Flex
+    direction={{ base: 'column', md: 'row' }}
+    align="center"
+    justify={{ base: 'center', md: 'flex-end' }} // Aligner à droite sur les écrans plus larges
+    my={10}
+    p={5}
+  >
+    <VStack
+      align="stretch" // S'assurer que les enfants de VStack prennent toute la largeur disponible
+      spacing={4}
+      maxW={{ md: '2xl' }} // Limiter la largeur maximale du VStack pour éviter une étendue excessive sur les grands écrans
+      w="full" // Prendre toute la largeur disponible
+    >
+      <Heading as="h2" size="xl" mb={4} textAlign={{ base: 'center', md: 'left' }}>
+        Collect &{' '}
+        <Text as="span" bgClip="text" bgGradient={bgGradient} fontWeight="extrabold">
+          Sell Super Rare NFTs
+        </Text>
+      </Heading>
+      <Text fontSize="lg" mb={4} textAlign={{ base: 'center', md: 'left' }}>
+        Produce an exclusive NFT collection of over 10,000 items by uploading the necessary layers, and prepare to market your collection for sale.
+      </Text>
+      <Flex justifyContent={{ base: 'center', md: 'left' }} mb={4}>
+        <Button colorScheme="purple" marginRight={2}>
+          Let's Start
+        </Button>
+        <Button variant="outline" colorScheme="purple">
+          Join Discord
+        </Button>
       </Flex>
+    </VStack>
+    {lastNft && (
+      <Box
+        maxW={{ md: 'sm' }} // Limiter la largeur maximale de la Box pour le NFTCard
+        w="full" // Prendre toute la largeur disponible
+      >
+        <NFTCard
+          key={lastNft?.nftId}
+          item={lastNft}
+          initialIsLoading={isLoadingNFTs}
+        />
+      </Box>
+    )}
+  </Flex>
 
       <Heading size="lg" display="flex" alignItems="center" mb={4}>
         <Text as="span" fontWeight="bold">Featured Collections</Text>
