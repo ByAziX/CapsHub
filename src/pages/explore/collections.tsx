@@ -15,7 +15,6 @@ const ExploreCollectionsPage = () => {
   const spinnerColor = useColorModeValue('purple.500', 'purple.200');
 
   useEffect(() => {
-    // Chargez les données initiales des collections
     setIsLoading(true);
     fetch(`/api/collections?limit=${DEFAULT_LIMIT}&offset=${offset}`)
       .then((res) => res.json())

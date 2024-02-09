@@ -14,42 +14,48 @@ interface CollectionDetailsPageProps {
 
 const DEFAULT_LIMIT = 24;
 
-const CollectionDetailsPage: NextPage<CollectionDetailsPageProps> = ({ collection, collectionid, sortBy }) => {
+const CollectionDetailsPage = ({ collection, collectionid, sortBy }) => {
   const [loadedNfts, setLoadedNfts] = useState<NFTEntity[]>([]);
   const [offset, setOffset] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const sentinel = useRef<HTMLDivElement | null>(null);
   const inputFocusBorderColor = useColorModeValue('purple.500', 'purple.200');
 
-
-  
-  // Fetch NFTs for the collection
+  // Initial fetch for NFTs
   useEffect(() => {
-    if (collectionid) {
+    const loadNFTs = async () => {
       setIsLoading(true);
-      fetch(`/api/collection-nfts/${collectionid}?limit=${DEFAULT_LIMIT}&offset=${offset}&sortBy=${sortBy}`)
-        .then(res => res.json())
-        .then(data => {
-          setLoadedNfts(prev => [...prev, ...data.nfts]);
-          setTotalCount(data.totalCount);
-          setOffset(prevOffset => prevOffset + DEFAULT_LIMIT);
-          setIsLoading(false);
-        })
-        .catch(err => console.error("Error loading more NFTs:", err));
-    }
-  }, [collectionid, offset, sortBy]);
+      try {
+        const response = await fetch(`/api/collection-nfts/${collectionid}?limit=${DEFAULT_LIMIT}&offset=${offset}&sortBy=${sortBy}`);
+        const data = await response.json();
+        setLoadedNfts(data.nfts);
+        setTotalCount(data.totalCount);
+        setOffset(offset + DEFAULT_LIMIT);
+      } catch (error) {
+        console.error("Error loading NFTs:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  // IntersectionObserver for infinite scrolling
+    if (collectionid) {
+      loadNFTs();
+    }
+  }, [collectionid, sortBy]); // Depend on collectionid and sortBy to reload NFTs when these values change.
+
+  // Infinite scroll implementation
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && loadedNfts.length < totalCount && !isLoading) {
+      if (entries[0].isIntersecting && !isLoading && loadedNfts.length < totalCount) {
         setIsLoading(true);
         fetch(`/api/collection-nfts/${collectionid}?limit=${DEFAULT_LIMIT}&offset=${offset}&sortBy=${sortBy}`)
           .then(res => res.json())
           .then(data => {
-            setLoadedNfts(prev => [...prev, ...data.nfts]);
-            setOffset(prevOffset => prevOffset + DEFAULT_LIMIT);
+            if (data.nfts.length > 0) {
+              setLoadedNfts(prev => [...prev, ...data.nfts]);
+              setOffset(prevOffset => prevOffset + data.nfts.length);
+            }
             setIsLoading(false);
           })
           .catch(err => console.error("Error loading more NFTs:", err));
