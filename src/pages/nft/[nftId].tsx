@@ -27,7 +27,13 @@ const NFTDetailsPage = ({ nft }) => {
   const bgColor = useColorModeValue('light.bg', 'dark.bg');
   const textColor = useColorModeValue('light.text', 'dark.text');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
+/*
   const { buyNftFunction } = useWalletConnect();
+
+  <Button colorScheme="purple" marginRight={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
+  Buy Now
+  </Button>
+  */
 
 
   console.log('NFT details:', nft);
@@ -96,9 +102,7 @@ const NFTDetailsPage = ({ nft }) => {
             )}
             <Flex>
               
-              <Button colorScheme="purple" marginRight={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
-                Buy Now
-              </Button>
+           
 
               <Button variant="outline" colorScheme="purple">
                 Make Offer

@@ -265,7 +265,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
 
 
 
-
+/*
   const buyNftFunction = useCallback(async (nftId, nftPrice) => {
     if (typeof client === "undefined") {
       throw new Error("WalletConnect is not initialized");
@@ -313,7 +313,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
       setIsLoading(false);
     }
   }, [client, session, address]);
-
+*/
   return (
     <WalletConnectContext.Provider value={{ connect, buyNftFunction }}>
       {children}
