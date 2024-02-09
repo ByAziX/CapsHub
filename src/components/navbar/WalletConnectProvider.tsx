@@ -159,14 +159,15 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         setIsError(false);
 
         if (uri) {
-          if (!isMobile()){
-          QRCodeModal.open(uri, () => {});
+          if (!isMobile()) {
+            QRCodeModal.open(uri, () => { });
           } else {
-            window.location.replace(`ternoa-wallet://wc?uri=${uri}`)          }
+            window.location.replace(`ternoa-wallet://wc?uri=${uri}`);
+          }
         }
         const session = await approval();
         onSessionConnected(session);
-        
+
         return session;
       } catch (e) {
         console.error(e);
@@ -199,7 +200,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     setSession(undefined);
     setAddress(undefined);
   };
-  
+
 
   const signMessage = useCallback(async () => {
     if (typeof client === "undefined") {
@@ -240,7 +241,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     } catch {
       setIsError(true);
       console.log("ERROR: invalid signature");
-      
+
     } finally {
       setIsLoading(false);
     }
@@ -263,8 +264,8 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
   }, [client, createClient]);
 
 
-  
-  
+
+
   const buyNftFunction = useCallback(async (nftId, nftPrice) => {
     if (typeof client === "undefined") {
       throw new Error("WalletConnect is not initialized");
@@ -279,7 +280,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     setIsError(false);
     await initializeApi("wss://alphanet.ternoa.com");
     console.log(nftId, nftPrice);
-    
+
     const tx = await buyNftTx(nftId, nftPrice);
     setIsLoading(true)
     try {
@@ -307,15 +308,15 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     } catch {
       setIsError(true);
       console.log("ERROR: invalid signature");
-      
+
     } finally {
       setIsLoading(false);
     }
   }, [client, session, address]);
 
   return (
-      <WalletConnectContext.Provider value={{ connect,buyNftFunction }}>
-        {children}
-      </WalletConnectContext.Provider>
+    <WalletConnectContext.Provider value={{ connect, buyNftFunction }}>
+      {children}
+    </WalletConnectContext.Provider>
   );
 }
