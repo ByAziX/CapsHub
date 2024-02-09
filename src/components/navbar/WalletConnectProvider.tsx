@@ -42,7 +42,7 @@ const requiredNamespaces = {
 
 interface WalletConnectContextType {
   connect: (pairing?: any) => Promise<SessionTypes.Struct | null>;
-  //buyNftFunction: (nftId: string, nftPrice: string) => Promise<void>;
+  buyNftFunction: (nftId: string, nftPrice: string) => Promise<void>;
 }
 
 // Création du contexte avec un type spécifié
@@ -264,8 +264,6 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
   }, [client, createClient]);
 
 
-
-/*
   const buyNftFunction = useCallback(async (nftId, nftPrice) => {
     if (typeof client === "undefined") {
       throw new Error("WalletConnect is not initialized");
@@ -313,9 +311,10 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
       setIsLoading(false);
     }
   }, [client, session, address]);
-*/
+
+  
   return (
-    <WalletConnectContext.Provider value={{ connect }}>
+    <WalletConnectContext.Provider value={{ connect, buyNftFunction}}>
       {children}
     </WalletConnectContext.Provider>
   );
