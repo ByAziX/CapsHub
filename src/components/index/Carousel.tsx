@@ -49,6 +49,7 @@ const Carousel = ({ items, CardComponent, isLoading }) => {
         p={2}
         scrollBehavior="smooth"
       >
+        
         {items.map((item, index) => (
           <Box key={index} p="4">
             <CardComponent item={item} initialIsLoading={isLoading} />
