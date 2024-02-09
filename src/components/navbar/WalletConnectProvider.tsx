@@ -199,6 +199,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     setSession(undefined);
     setAddress(undefined);
   };
+  
 
   const signMessage = useCallback(async () => {
     if (typeof client === "undefined") {
