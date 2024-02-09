@@ -7,7 +7,7 @@ export default class Document extends NextDocument {
       <Html>
         <Head />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <html lang="en" />
+        <html lang="fr" />
         <meta charSet="utf-8" />
         <meta name="description" content="CapsHub" />
         <meta name="keywords" content="CapsHub" />
@@ -34,7 +34,6 @@ export default class Document extends NextDocument {
         <meta name="msapplication-TileColor" content="#319795" />
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="theme-color" content="#319795" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <title>CapsHub</title>
         <body>
