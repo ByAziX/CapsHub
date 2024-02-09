@@ -1,26 +1,38 @@
-import React, { useState, useEffect, useRef, use } from 'react';
-import { GetServerSideProps } from 'next';
+import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import { Box, Spinner, Flex, useColorModeValue } from '@chakra-ui/react';
 
-import { getLastListedNFTs } from '../../services/nftService';
 import NFTList from '../../components/explore/NFTList';
-import { NFTListProps } from '../../interfaces/interfaces';
+import { NFTEntity } from '../../interfaces/interfaces'; // Assurez-vous que cette interface est correcte
 
 const DEFAULT_LIMIT = 24;
 
-const ExplorePage: React.FC<NFTListProps> = ({ nfts, totalCount, sortBy }) => {
-  const [loadedNfts, setLoadedNfts] = useState(nfts);
-  const [offset, setOffset] = useState(DEFAULT_LIMIT);
+const ExplorePage = () => {
+  const [loadedNfts, setLoadedNfts] = useState<NFTEntity[]>([]);
+  const [offset, setOffset] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const sentinel = useRef<HTMLDivElement | null>(null);
   const inputFocusBorderColor = useColorModeValue('purple.500', 'purple.200');
+  const router = useRouter();
+  const sortBy = router.query.NFTSort as string || 'TIMESTAMP_LISTED_DESC';
 
   useEffect(() => {
-    setLoadedNfts([]);
-    setOffset(0);
+    // Charger les données initiales
+    setIsLoading(true);
+    fetch(`/api/nfts?limit=${DEFAULT_LIMIT}&offset=${offset}&sortBy=${sortBy}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setLoadedNfts(data.nfts);
+        setTotalCount(data.totalCount);
+        setOffset(DEFAULT_LIMIT);
+      })
+      .catch((err) => console.error("Error loading NFTs:", err))
+      .finally(() => setIsLoading(false));
   }, [sortBy]);
-  
+
   useEffect(() => {
+    // Logique pour charger plus de NFTs lors du scroll
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && loadedNfts.length < totalCount && !isLoading) {
@@ -43,7 +55,7 @@ const ExplorePage: React.FC<NFTListProps> = ({ nfts, totalCount, sortBy }) => {
     }
 
     return () => observer.disconnect();
-  }, [offset, totalCount, loadedNfts.length, isLoading]);
+  }, [offset, totalCount, loadedNfts.length, isLoading, sortBy]);
 
   return (
     <Box>
@@ -56,19 +68,6 @@ const ExplorePage: React.FC<NFTListProps> = ({ nfts, totalCount, sortBy }) => {
       <Box ref={sentinel} h="2px" my="2px" />
     </Box>
   );
-};
-
-export const getServerSideProps: GetServerSideProps<NFTListProps> = async (context) => {
-  const sortBy = context.query.NFTSort as string || 'TIMESTAMP_LISTED_DESC';
-  const { nfts, totalCount } = await getLastListedNFTs(DEFAULT_LIMIT, 0, sortBy);
-  return {
-    props: {
-      nfts,
-      totalCount,
-      sortBy,
-      isLoading: false,
-    },
-  };
 };
 
 export default ExplorePage;

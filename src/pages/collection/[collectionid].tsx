@@ -9,52 +9,60 @@ import NFTList from '../../components/explore/NFTList';
 interface CollectionDetailsPageProps {
   collection: CollectionEntity;
   collectionid: string;
-  nfts: NFTEntity[];
-  totalCount: number;
   sortBy: string;
-  initialIsLoading: boolean;
 }
 
 const DEFAULT_LIMIT = 24;
 
-const CollectionDetailsPage: NextPage<CollectionDetailsPageProps> = ({ collection, collectionid, nfts, totalCount, sortBy }) => {
-  const [loadedNfts, setLoadedNfts] = useState(nfts);
-  const [offset, setOffset] = useState(DEFAULT_LIMIT);
-  const [isLoading, setIsLoading] = useState(true);
+const CollectionDetailsPage: NextPage<CollectionDetailsPageProps> = ({ collection, collectionid, sortBy }) => {
+  const [loadedNfts, setLoadedNfts] = useState<NFTEntity[]>([]);
+  const [offset, setOffset] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const sentinel = useRef<HTMLDivElement | null>(null);
   const inputFocusBorderColor = useColorModeValue('purple.500', 'purple.200');
-  const logoSize = useBreakpointValue({ base: '50px', md: '150px' });
 
 
-  useEffect(() => {
-    setLoadedNfts([]);
-    setOffset(0);
-  }, [sortBy]);
   
+  // Fetch NFTs for the collection
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && loadedNfts.length < totalCount && !isLoading) {
-          setIsLoading(true);
-          fetch(`/api/collection-nfts/${collectionid}?limit=${DEFAULT_LIMIT}&offset=${offset}&sortBy=${sortBy}`)
-            .then((res) => res.json())
-            .then((data) => {
-              setLoadedNfts((prev) => [...prev, ...data.nfts]);
-              setOffset((prevOffset) => prevOffset + DEFAULT_LIMIT);
-            })
-            .catch((err) => console.error("Error loading more NFTs:", err))
-            .finally(() => setIsLoading(false));
-        }
-      },
-      { rootMargin: '100px' }
-    );
+    if (collectionid) {
+      setIsLoading(true);
+      fetch(`/api/collection-nfts/${collectionid}?limit=${DEFAULT_LIMIT}&offset=${offset}&sortBy=${sortBy}`)
+        .then(res => res.json())
+        .then(data => {
+          setLoadedNfts(prev => [...prev, ...data.nfts]);
+          setTotalCount(data.totalCount);
+          setOffset(prevOffset => prevOffset + DEFAULT_LIMIT);
+          setIsLoading(false);
+        })
+        .catch(err => console.error("Error loading more NFTs:", err));
+    }
+  }, [collectionid, offset, sortBy]);
+
+  // IntersectionObserver for infinite scrolling
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && loadedNfts.length < totalCount && !isLoading) {
+        setIsLoading(true);
+        fetch(`/api/collection-nfts/${collectionid}?limit=${DEFAULT_LIMIT}&offset=${offset}&sortBy=${sortBy}`)
+          .then(res => res.json())
+          .then(data => {
+            setLoadedNfts(prev => [...prev, ...data.nfts]);
+            setOffset(prevOffset => prevOffset + DEFAULT_LIMIT);
+            setIsLoading(false);
+          })
+          .catch(err => console.error("Error loading more NFTs:", err));
+      }
+    }, { rootMargin: '100px' });
 
     if (sentinel.current) {
       observer.observe(sentinel.current);
     }
 
     return () => observer.disconnect();
-  }, [offset, totalCount, loadedNfts.length, isLoading]);
+  }, [loadedNfts, isLoading, totalCount, offset, collectionid, sortBy]);
+
 
   return (
     <VStack>
@@ -102,16 +110,12 @@ export const getServerSideProps: GetServerSideProps<CollectionDetailsPageProps> 
   const sortBy = query.NFTSort as string || 'PRICE_ROUNDED_ASC';
 
   const { collection } = await getCollectionFromID(collectionId);
-  const { nfts, totalCount } = await getNFTfromCollection(collectionId, DEFAULT_LIMIT, 0, sortBy);
 
   return {
     props: {
       collection,
       collectionid: collectionId,
-      nfts,
-      totalCount,
       sortBy,
-      initialIsLoading: false,
     },
   };
 };

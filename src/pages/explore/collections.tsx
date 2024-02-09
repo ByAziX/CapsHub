@@ -1,25 +1,35 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Spinner, Flex, useColorModeValue } from '@chakra-ui/react';
 
-import { getCollections } from '../../services/collectionService';
 import CollectionList from '../../components/explore/CollectionList';
-import { CollectionListProps } from '../../interfaces/interfaces';
-import { GetServerSideProps } from 'next';
-
-
+import { CollectionEntity } from '../../interfaces/interfaces'; // Assurez-vous que cette interface est correcte
 
 const DEFAULT_LIMIT = 24;
 
-const ExploreCollectionsPage: React.FC<CollectionListProps> = ({ collections, totalCount }) => {
-  const [loadedCollections, setLoadedCollections] = useState(collections);
-  const [offset, setOffset] = useState(DEFAULT_LIMIT);
+const ExploreCollectionsPage = () => {
+  const [loadedCollections, setLoadedCollections] = useState<CollectionEntity[]>([]);
+  const [offset, setOffset] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const sentinel = useRef<HTMLDivElement | null>(null);
   const spinnerColor = useColorModeValue('purple.500', 'purple.200');
 
-  
+  useEffect(() => {
+    // Chargez les données initiales des collections
+    setIsLoading(true);
+    fetch(`/api/collections?limit=${DEFAULT_LIMIT}&offset=${offset}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setLoadedCollections(data.collections);
+        setTotalCount(data.totalCount);
+        setOffset(DEFAULT_LIMIT);
+      })
+      .catch((err) => console.error("Error loading collections:", err))
+      .finally(() => setIsLoading(false));
+  }, []);
 
   useEffect(() => {
+    // Observer pour charger plus de collections au scroll
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && loadedCollections.length < totalCount && !isLoading) {
@@ -46,7 +56,7 @@ const ExploreCollectionsPage: React.FC<CollectionListProps> = ({ collections, to
 
   return (
     <Box>
-      <CollectionList collections={loadedCollections} totalCount={totalCount} isLoading={isLoading}/>
+      <CollectionList collections={loadedCollections} totalCount={totalCount} isLoading={isLoading} />
       {isLoading && (
         <Flex justify="center" align="center" my="2px">
           <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color={spinnerColor} size="xl" />
@@ -55,17 +65,6 @@ const ExploreCollectionsPage: React.FC<CollectionListProps> = ({ collections, to
       <div ref={sentinel} style={{ height: '2px', margin: '2px' }}></div>
     </Box>
   );
-};
-
-export const getServerSideProps: GetServerSideProps<CollectionListProps> = async () => {
-  const { collections, totalCount } = await getCollections(DEFAULT_LIMIT, 0);
-  return {
-    props: {
-      collections,
-      totalCount,
-      isLoading: false,
-    },
-  };
 };
 
 export default ExploreCollectionsPage;

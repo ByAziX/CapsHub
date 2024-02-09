@@ -1,42 +1,35 @@
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
-import { NFTEntity } from '../interfaces/interfaces';
+import { useEffect, useRef, useState } from "react";
 
+export const useInfiniteScroll = (fetchDataFunction, limit = 24, sortBy = 'TIMESTAMP_LISTED_DESC') => {
+  const [items, setItems] = useState([]);
+  const [offset, setOffset] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const sentinel = useRef(null);
 
-interface UseInfiniteScrollProps {
-  isLoading: boolean;
-  totalCount: number;
-  loadedNfts: NFTEntity[];
-  setLoadedNfts: Dispatch<SetStateAction<NFTEntity[]>>;
-  setOffset: Dispatch<SetStateAction<number>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-  sortBy: string;
-  DEFAULT_LIMIT: number;
-}
+  // Charger les données initiales
+  useEffect(() => {
+    setIsLoading(true);
+    fetchDataFunction(limit, 0, sortBy).then(({ data, totalCount }) => {
+      setItems(data);
+      setTotalCount(totalCount);
+      setOffset(data.length);
+      setIsLoading(false);
+    });
+  }, [fetchDataFunction, limit, sortBy]);
 
-const useInfiniteScroll = ({
-  isLoading,
-  totalCount,
-  loadedNfts,
-  setLoadedNfts,
-  setOffset,
-  setIsLoading, // Ajout de setIsLoading ici
-  sortBy,
-  DEFAULT_LIMIT
-}: UseInfiniteScrollProps) => {
-  const sentinel = useRef<HTMLDivElement | null>(null);
-
+  // Observer pour charger plus de données au scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && loadedNfts.length < totalCount && !isLoading) {
-          setIsLoading(true); // Utilisation correcte de setIsLoading
-          fetch(`/api/nfts?limit=${DEFAULT_LIMIT}&offset=${loadedNfts.length}&sortBy=${sortBy}`)
-            .then((res) => res.json())
-            .then((data) => {
-              setLoadedNfts((prev) => [...prev, ...data.nfts]);
-              setOffset((prevOffset) => prevOffset + DEFAULT_LIMIT);
-            })
-            .finally(() => setIsLoading(false)); // Assurez-vous d'arrêter le chargement une fois terminé
+        if (entries[0].isIntersecting && items.length < totalCount && !isLoading) {
+          setIsLoading(true);
+          fetchDataFunction(limit, offset, sortBy).then(({ data, totalCount: newTotalCount }) => {
+            setItems((prevItems) => [...prevItems, ...data]);
+            setOffset((prevOffset) => prevOffset + data.length);
+            setTotalCount(newTotalCount);
+            setIsLoading(false);
+          });
         }
       },
       { rootMargin: '100px' }
@@ -46,14 +39,8 @@ const useInfiniteScroll = ({
       observer.observe(sentinel.current);
     }
 
-    return () => {
-      if (sentinel.current) {
-        observer.unobserve(sentinel.current);
-      }
-    };
-  }, [isLoading, totalCount, loadedNfts.length, setLoadedNfts, setOffset, setIsLoading, sortBy, DEFAULT_LIMIT]);
+    return () => observer && observer.disconnect();
+  }, [fetchDataFunction, limit, offset, items.length, isLoading, totalCount, sortBy]);
 
-  return sentinel;
+  return { items, isLoading, sentinel };
 };
-
-export default useInfiniteScroll;
