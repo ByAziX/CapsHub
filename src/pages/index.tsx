@@ -67,7 +67,7 @@ const IndexPage = () => {
   <Flex
     direction={{ base: 'column', md: 'row' }}
     align="center"
-    justify={{ base: 'center', md: 'flex-end' }} // Aligner à droite sur les écrans plus larges
+    justify={{ base: 'center', md: 'center' }} // Aligner à droite sur les écrans plus larges
     my={10}
     p={5}
   >
@@ -75,7 +75,6 @@ const IndexPage = () => {
       align="stretch" // S'assurer que les enfants de VStack prennent toute la largeur disponible
       spacing={4}
       maxW={{ md: '2xl' }} // Limiter la largeur maximale du VStack pour éviter une étendue excessive sur les grands écrans
-      w="full" // Prendre toute la largeur disponible
     >
       <Heading as="h2" size="xl" mb={4} textAlign={{ base: 'center', md: 'left' }}>
         Collect &{' '}
@@ -98,7 +97,6 @@ const IndexPage = () => {
     {lastNft && (
       <Box
         maxW={{ md: 'sm' }} // Limiter la largeur maximale de la Box pour le NFTCard
-        w="full" // Prendre toute la largeur disponible
       >
         <NFTCard
           key={lastNft?.nftId}
