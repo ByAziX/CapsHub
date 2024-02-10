@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Text, Skeleton, VStack, useColorModeValue, Tooltip, Link, Badge } from '@chakra-ui/react';
+import { Box, Text, Skeleton, VStack, useColorModeValue, Tooltip, Link, Badge, Spacer } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { NFTEntity } from '../../interfaces/interfaces';
 import { motion } from 'framer-motion';
@@ -46,6 +46,8 @@ const NFTCard: React.FC<{
       width={{ base: "100%", md: width }}
       height={{ base: "100%", md: height }}
       transition={{ duration: 0.2 }}
+      display="flex" // Utiliser Flexbox
+    flexDirection="column" // Orientation verticale
     >
       <Box position="relative" height={width} overflow="hidden">
         {isLoading ? (
@@ -70,7 +72,7 @@ const NFTCard: React.FC<{
           />
         )}
       </Box>
-      <VStack p="2" align="left" spacing={1}>
+      <VStack p="2" align="left" spacing={0}>
         <Skeleton isLoaded={!isLoading}>
           {item?.metadata?.title && (
             <Text fontSize="md" fontWeight="bold" isTruncated>
@@ -89,7 +91,7 @@ const NFTCard: React.FC<{
           {item?.collection && (
             <Tooltip label="NFT collection id" aria-label="NFT collection">
               <Link as={NextLink} href={`/collection/${item?.collection?.collectionId}`} passHref isTruncated>
-                Collection N°{item?.collection.collectionId}
+                <Badge colorScheme="purple" isTruncated>Collection N°{item?.collection.collectionId}</Badge>
               </Link>
             </Tooltip>
           )}
@@ -99,14 +101,19 @@ const NFTCard: React.FC<{
             <Badge colorScheme="green" isTruncated>Listed for sale</Badge>
           )}
         </Skeleton>
+      </VStack>
+      <Spacer /> {/* Ceci pousse le contenu suivant vers le bas */}
+    <Box p="2">
+      <VStack align="flex-end">
         <Skeleton isLoaded={!isLoading}>
           {item?.priceRounded && (
             <Text fontSize="xs" fontWeight="bold" isTruncated>
-              Price: {item?.priceRounded} CAPS
+              {item?.priceRounded} CAPS
             </Text>
           )}
         </Skeleton>
       </VStack>
+    </Box>
     </MotionBox>
   );
 };
