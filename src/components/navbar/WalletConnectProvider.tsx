@@ -265,7 +265,6 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     if (typeof session === "undefined") {
       throw new Error("Session not connected");
     }
-    await initializeApi("wss://alphanet.ternoa.com");
     const tx = await buyNftTx(nftId, nftPrice);
     setIsLoading(true)
     try {
