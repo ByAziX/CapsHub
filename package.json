@@ -37,15 +37,7 @@
     "swiper": "^11.0.5",
     "ternoa-connect": "^0.1.1",
     "ternoa-js": "^1.6.0",
-    "terser": "^5.27.0",
     "typescript": "^4.7.2"
-  },
-  "devDependencies": {
-    "@types/node": "^18.0.0",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "typescript": "^4.7.2",
-    "webpack": "^5.90.1"
   },
   "overrides": {
     "@walletconnect/sign-client": "2.0.0-beta.100",
@@ -56,5 +48,8 @@
   },
   "engines": {
     "node": "18.x"
+  },
+  "devDependencies": {
+    "terser": "^5.24.0"
   }
 }
