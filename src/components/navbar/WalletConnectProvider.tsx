@@ -1,13 +1,4 @@
 import { useCallback, useState, useEffect, ReactNode, useContext, createContext } from "react";
-import {
-  Box,
-  Flex,
-  Heading,
-  Image,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-
 import Client from "@walletconnect/sign-client";
 import { PairingTypes, SessionTypes } from "@walletconnect/types";
 import QRCodeModal from "@walletconnect/legacy-modal";
@@ -20,7 +11,7 @@ import {
   signatureVerify,
 } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";
-import { WaitUntil, buyItNowTx, buyNft, buyNftTx, initializeApi, makeRentOfferTx } from "ternoa-js";
+import { buyNftTx, initializeApi } from "ternoa-js";
 
 const DEFAULT_APP_METADATA = {
   name: "TeamT",
@@ -42,6 +33,7 @@ const requiredNamespaces = {
 
 interface WalletConnectContextType {
   connect: (pairing?: any) => Promise<SessionTypes.Struct | null>;
+  buyNftFunction: (nftId: string, nftPrice: string) => Promise<void>;
 }
 
 // Création du contexte avec un type spécifié
@@ -274,7 +266,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
       throw new Error("Session not connected");
     }
     setIsLoading(true);
-    await initializeApi("wss://mainnet.ternoa.com");
+    await initializeApi("wss://alphanet.ternoa.com");
 
     const tx = await buyNftTx(nftId, nftPrice);
     setIsLoading(true)
@@ -310,7 +302,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
 
   
   return (
-    <WalletConnectContext.Provider value={{ connect}}>
+    <WalletConnectContext.Provider value={{ connect,buyNftFunction}}>
       {children}
     </WalletConnectContext.Provider>
   );
