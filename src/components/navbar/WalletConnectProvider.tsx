@@ -274,9 +274,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
       throw new Error("Session not connected");
     }
     setIsLoading(true);
-    setIsError(false);
     await initializeApi("wss://alphanet.ternoa.com");
-    console.log(nftId, nftPrice);
 
     const tx = await buyNftTx(nftId, nftPrice);
     setIsLoading(true)
