@@ -47,7 +47,7 @@ const NFTCard: React.FC<{
       height={{ base: "100%", md: height }}
       transition={{ duration: 0.2 }}
       display="flex" // Utiliser Flexbox
-    flexDirection="column" // Orientation verticale
+      flexDirection="column" // Orientation verticale
     >
       <Box position="relative" height={width} overflow="hidden">
         {isLoading ? (

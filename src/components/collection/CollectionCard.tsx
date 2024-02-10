@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, useColorModeValue, Badge, VStack, HStack, AspectRatio, Skeleton, Tooltip } from '@chakra-ui/react';
+import { Box, Text, useColorModeValue, Badge, VStack, HStack, AspectRatio, Skeleton, Tooltip, Spacer } from '@chakra-ui/react';
 import { CollectionEntity } from '../../interfaces/interfaces';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -47,6 +47,8 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
       onClick={handleCollectionClick}
       style={{ cursor: 'pointer' }}
       position="relative"
+      display="flex" // Utiliser Flexbox
+      flexDirection="column" // Orientation verticale
     >
       {isLoading ? (
         <>
@@ -88,6 +90,10 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
                 <Text fontSize="lg" fontWeight="bold" isTruncated>{item.name}</Text>
               </Tooltip>
             </HStack>
+            </VStack>
+            <Spacer />
+            <Box p="2">
+      <VStack align="flex-start">
             <HStack>
               <Badge colorScheme="purple" isTruncated>Collection ID: {item.collectionId}</Badge>
               <Badge colorScheme="purple" isTruncated>{item.nbNfts} NFTs</Badge>
@@ -97,6 +103,7 @@ const CollectionCard: React.FC<CollectionCardProps> = ({
               <Badge colorScheme={item.hasReachedLimit ? "green" : "gray"} isTruncated>{item.hasReachedLimit ? `Limit ✓` : 'Unlimited ✕'}</Badge>
             </HStack>
           </VStack>
+        </Box>
         </>
       )}
     </MotionBox>
