@@ -36,7 +36,7 @@
     "redis": "^4.6.13",
     "swiper": "^11.0.5",
     "ternoa-connect": "^0.1.1",
-    "ternoa-js": "^1.6.0",
+    "ternoa-js": "^1.6.2",
     "typescript": "^4.7.2",
     "terser-webpack-plugin": "5.1.2",
     "webpack": "^5.68.0"
