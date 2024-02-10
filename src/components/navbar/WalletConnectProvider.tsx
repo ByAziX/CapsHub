@@ -265,9 +265,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     if (typeof session === "undefined") {
       throw new Error("Session not connected");
     }
-    setIsLoading(true);
     await initializeApi("wss://alphanet.ternoa.com");
-
     const tx = await buyNftTx(nftId, nftPrice);
     setIsLoading(true)
     try {
@@ -275,31 +273,32 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_message',
+          method: "sign_message",
           params: {
             pubKey: address,
             request: {
               hash: tx,
-              nonce: -1,
-              submit: true,
             },
           },
         },
       });
-      const txHash = JSON.parse(response);
-      if (txHash) {
-        console.log('OK')
-      }
-      setIsLoading(false)
-    } catch {
+      const responseObj = JSON.parse(response);
+      await cryptoWaitReady();
+      const isValid = isValidSignaturePolkadot(
+        "message",
+        responseObj.signedMessageHash,
+        address
+      );
+      setIsAccountCertified(isValid);
+    }
+    catch {
       setIsError(true);
       console.log("ERROR: invalid signature");
-
     } finally {
       setIsLoading(false);
     }
-  }, [client, session, address]);
-
+  }
+    , [client, session, address]);
   
   return (
     <WalletConnectContext.Provider value={{ connect,buyNftFunction}}>
