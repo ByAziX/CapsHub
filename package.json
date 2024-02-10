@@ -38,8 +38,14 @@
     "ternoa-connect": "^0.1.1",
     "ternoa-js": "^1.6.0",
     "typescript": "^4.7.2",
-    "terser": "^5.20.0",
     "terser-webpack-plugin": "5.1.2"
+
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "typescript": "^4.7.2"
   },
   "overrides": {
     "@walletconnect/sign-client": "2.0.0-beta.100",
