@@ -8,13 +8,7 @@ const nextConfig = {
   },
   optimization: {
     minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        cache: true,
-      }),
-    ],
   },
-  target: () => undefined
 }
 
 module.exports = nextConfig
