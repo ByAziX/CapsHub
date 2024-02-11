@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Flex,
@@ -15,7 +15,9 @@ import {
   Alert,
   AlertIcon,
   Container,
-  Link
+  Link,
+  Input,
+
 } from '@chakra-ui/react';
 import { getNftData } from '../../services/nftService';
 import NextLink from 'next/link';
@@ -29,17 +31,8 @@ const NFTDetailsPage = ({ nft }) => {
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const { buyNftFunction } = useWalletConnect();
   const { address,listNFTFunction,unlistNFTFunction } = useWalletConnect();
+  const [listingPrice, setListingPrice] = useState<number>(10);
 
-  console.log('NFT details:', nft);
-
-  // update button quand les nft change d'etat (listed, unlisted)
-  // update button quand l'adresse change
-  // update button quand le prix change
-  // update button quand le nft est vendu
-   useEffect(() => {
-    console.log('NFT details:', nft);
-  }
-  , [nft]);
 
   if (!nft) {
     // If the NFT data is not yet loaded, display a loading state
@@ -105,10 +98,20 @@ const NFTDetailsPage = ({ nft }) => {
             )}
             <Flex>
             {address === nft.owner && !nft.isListed && (
-              <Button colorScheme="purple" mr={4} onClick={() => listNFTFunction(nft.nftId, nft.priceRounded)}>
+            <>
+              <Input
+                placeholder="Enter listing price"
+                type="number"
+                value={listingPrice}
+                onChange={(e) => setListingPrice(parseFloat(e.target.value))}
+                mr={4}
+                mb={4}
+              />
+              <Button colorScheme="purple" onClick={() => listNFTFunction(nft.nftId, listingPrice)}>
                 List NFT
               </Button>
-            )}
+            </>
+          )}
 
             {address === nft.owner && nft.isListed && (
               <Button colorScheme="purple" mr={4} onClick={() => unlistNFTFunction(nft.nftId)}> 
@@ -126,15 +129,6 @@ const NFTDetailsPage = ({ nft }) => {
                 </Button>
               </Box>
             )}
-
-
-
-              
-              
-
-               
-              
-              
             </Flex>
           </VStack>
         </Box>

@@ -14,8 +14,8 @@ import { u8aToHex } from "@polkadot/util";
 import { buyNftTx, initializeApi, listNftTx, unlistNftTx } from "ternoa-js";
 
 const DEFAULT_APP_METADATA = {
-  name: "TeamT",
-  description: "TeamT",
+  name: "CapsHub",
+  description: "CapsHub",
   url: "https://ternoa.com",
   icons: ["https://www.ternoa.com/favicon.ico"],
 };
@@ -25,8 +25,8 @@ const TERNOA_ALPHANET_CHAIN = "ternoa:18bcdb75a0bba577b084878db2dc2546";
 const requiredNamespaces = {
   ternoa: {
     chains: [TERNOA_ALPHANET_CHAIN],
-    events: ["event_test"],
-    methods: ["sign_message"],
+    events: ['ternoa:1'],
+    methods: ['sign_message','sign_transaction']
   },
 };
 
@@ -35,7 +35,7 @@ interface WalletConnectContextType {
   connect: (pairing?: any) => Promise<SessionTypes.Struct | null>;
   buyNftFunction: (nftId: string, nftPrice: string) => Promise<void>;
   address: string | undefined;
-  listNFTFunction: (nftId: string, nftPrice: string) => Promise<void>;
+  listNFTFunction: (nftId: string, nftPrice: number) => Promise<void>;
   unlistNFTFunction: (nftId: string) => Promise<void>;
 }
 
@@ -276,7 +276,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_message',
+          method: 'sign_transaction',
           params: {
             pubKey: address,
             request: {
@@ -320,7 +320,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_message',
+          method: 'sign_transaction',
           params: {
             pubKey: address,
             request: {
@@ -364,7 +364,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_message',
+          method: 'sign_transaction',
           params: {
             pubKey: address,
             request: {

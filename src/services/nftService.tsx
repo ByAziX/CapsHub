@@ -76,7 +76,7 @@ export const getNftData = async (id: string): Promise<NFTEntity> => {
     const nft = response.nftEntity;
     const { metadata, mediaUrl } = await fetchIPFSMetadata(nft.offchainData);
 
-    await cache.set(cacheKey, JSON.stringify({ ...nft, metadata, mediaUrl }), 3600); // Cache pour 1 heure
+    await cache.set(cacheKey, JSON.stringify({ ...nft, metadata, mediaUrl }), 10); // Cache pour 1 heure
     
     return { ...nft, metadata, mediaUrl };
   } catch (error) {
