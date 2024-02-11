@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Flex,
@@ -28,13 +28,18 @@ const NFTDetailsPage = ({ nft }) => {
   const textColor = useColorModeValue('light.text', 'dark.text');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const { buyNftFunction } = useWalletConnect();
-  const { address } = useWalletConnect();
-
-
-
-
+  const { address,listNFTFunction,unlistNFTFunction } = useWalletConnect();
 
   console.log('NFT details:', nft);
+
+  // update button quand les nft change d'etat (listed, unlisted)
+  // update button quand l'adresse change
+  // update button quand le prix change
+  // update button quand le nft est vendu
+   useEffect(() => {
+    console.log('NFT details:', nft);
+  }
+  , [nft]);
 
   if (!nft) {
     // If the NFT data is not yet loaded, display a loading state
@@ -99,27 +104,33 @@ const NFTDetailsPage = ({ nft }) => {
               </Text></>
             )}
             <Flex>
-            {address === nft.owner && (
-                <Button colorScheme="purple" mr={4}>
-                  Unlist NFT
-                </Button>
-              )}
-              {address === nft.owner && nft.isListed && (
-                <Button colorScheme="purple" mr={4}>
-                  Unlist NFT
-                </Button>
-              )}
-              {nft.isListed && (
-                <Box>
-                <Button colorScheme="purple" marginRight={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
-                Buy Now
+            {address === nft.owner && !nft.isListed && (
+              <Button colorScheme="purple" mr={4} onClick={() => listNFTFunction(nft.nftId, nft.priceRounded)}>
+                List NFT
               </Button>
+            )}
 
-              <Button variant="outline" colorScheme="purple">
-                Make Offer
+            {address === nft.owner && nft.isListed && (
+              <Button colorScheme="purple" mr={4} onClick={() => unlistNFTFunction(nft.nftId)}> 
+                Unlist NFT
               </Button>
+            )}
+
+            {nft.isListed && address !== nft.owner && (
+              <Box display="flex" alignItems="center">
+                <Button colorScheme="purple" mr={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
+                  Buy Now
+                </Button>
+                <Button variant="outline" colorScheme="purple">
+                  Make Offer
+                </Button>
               </Box>
-              )}
+            )}
+
+
+
+              
+              
 
                
               

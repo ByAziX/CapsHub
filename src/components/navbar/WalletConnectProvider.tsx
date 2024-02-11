@@ -11,7 +11,7 @@ import {
   signatureVerify,
 } from "@polkadot/util-crypto";
 import { u8aToHex } from "@polkadot/util";
-import { buyNftTx, initializeApi } from "ternoa-js";
+import { buyNftTx, initializeApi, listNftTx, unlistNftTx } from "ternoa-js";
 
 const DEFAULT_APP_METADATA = {
   name: "TeamT",
@@ -35,6 +35,8 @@ interface WalletConnectContextType {
   connect: (pairing?: any) => Promise<SessionTypes.Struct | null>;
   buyNftFunction: (nftId: string, nftPrice: string) => Promise<void>;
   address: string | undefined;
+  listNFTFunction: (nftId: string, nftPrice: string) => Promise<void>;
+  unlistNFTFunction: (nftId: string) => Promise<void>;
 }
 
 // Création du contexte avec un type spécifié
@@ -299,9 +301,97 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     }
   }, [client, session, address]);
 
+
+  const listNFTFunction = useCallback(async (nftId, nftPrice) => {
+    if (typeof client === "undefined") {
+      throw new Error("WalletConnect is not initialized");
+    }
+    if (typeof address === "undefined") {
+      throw new Error("Not connected");
+    }
+    if (typeof session === "undefined") {
+      throw new Error("Session not connected");
+    }
+    await initializeApi("wss://alphanet.ternoa.com");
+    const tx = await listNftTx(nftId, 386, nftPrice);
+    setIsLoading(true)
+    try {
+      const response = await client.request<string>({
+        chainId: TERNOA_ALPHANET_CHAIN,
+        topic: session.topic,
+        request: {
+          method: 'sign_message',
+          params: {
+            pubKey: address,
+            request: {
+              hash: tx,
+              nonce: -1,
+              submit: true,
+            },
+          },
+        },
+      });
+      const txHash = JSON.parse(response);
+      if (txHash) {
+        console.log('OK')
+      }
+      setIsLoading(false)
+    } catch {
+      setIsError(true);
+      console.log("ERROR: invalid signature");
+
+    } finally {
+      setIsLoading(false);
+    }
+  }, [client, session, address]);
+
+
+  const unlistNFTFunction = useCallback(async (nftId) => {
+    if (typeof client === "undefined") {
+      throw new Error("WalletConnect is not initialized");
+    }
+    if (typeof address === "undefined") {
+      throw new Error("Not connected");
+    }
+    if (typeof session === "undefined") {
+      throw new Error("Session not connected");
+    }
+    await initializeApi("wss://alphanet.ternoa.com");
+    const tx = await unlistNftTx(nftId)
+    setIsLoading(true)
+    try {
+      const response = await client.request<string>({
+        chainId: TERNOA_ALPHANET_CHAIN,
+        topic: session.topic,
+        request: {
+          method: 'sign_message',
+          params: {
+            pubKey: address,
+            request: {
+              hash: tx,
+              nonce: -1,
+              submit: true,
+            },
+          },
+        },
+      });
+      const txHash = JSON.parse(response);
+      if (txHash) {
+        console.log('OK')
+      }
+      setIsLoading(false)
+    } catch {
+      setIsError(true);
+      console.log("ERROR: invalid signature");
+
+    } finally {
+      setIsLoading(false);
+    }
+  }, [client, session, address]);
+
   
   return (
-    <WalletConnectContext.Provider value={{ connect,buyNftFunction,address}}>
+    <WalletConnectContext.Provider value={{ connect,buyNftFunction,listNFTFunction,unlistNFTFunction,address}}>
       {children}
     </WalletConnectContext.Provider>
   );
