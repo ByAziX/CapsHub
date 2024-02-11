@@ -24,11 +24,13 @@
     "@walletconnect/core": "2.0.0-beta.100",
     "@walletconnect/legacy-modal": "2.0.0-beta.100",
     "@walletconnect/sign-client": "2.0.0-beta.100",
+    "@walletconnect/types": "2.0.0-beta.100",
+    "@walletconnect/utils": "2.0.0-beta.100",
     "axios": "^1.6.5",
     "clsx": "^2.1.0",
     "framer-motion": "^6.3.0",
     "graphql-request": "^6.1.0",
-    "next": "14.0.1",
+    "next": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",
@@ -66,6 +68,7 @@
     "@walletconnect/types": "2.0.0-beta.100",
     "@walletconnect/utils": "2.0.0-beta.100",
     "@walletconnect/legacy-modal": "2.0.0-beta.100"
+    
   },
   "engines": {
     "node": "18.x"
