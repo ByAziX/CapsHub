@@ -28,6 +28,7 @@ const NFTDetailsPage = ({ nft }) => {
   const textColor = useColorModeValue('light.text', 'dark.text');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const { buyNftFunction } = useWalletConnect();
+  const { address } = useWalletConnect();
 
 
 
@@ -98,14 +99,31 @@ const NFTDetailsPage = ({ nft }) => {
               </Text></>
             )}
             <Flex>
-
-              <Button colorScheme="purple" marginRight={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
+            {address === nft.owner && (
+                <Button colorScheme="purple" mr={4}>
+                  Unlist NFT
+                </Button>
+              )}
+              {address === nft.owner && nft.isListed && (
+                <Button colorScheme="purple" mr={4}>
+                  Unlist NFT
+                </Button>
+              )}
+              {nft.isListed && (
+                <Box>
+                <Button colorScheme="purple" marginRight={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
                 Buy Now
               </Button>
 
               <Button variant="outline" colorScheme="purple">
                 Make Offer
               </Button>
+              </Box>
+              )}
+
+               
+              
+              
             </Flex>
           </VStack>
         </Box>
