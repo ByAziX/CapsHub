@@ -28,7 +28,7 @@ const NFTCard: React.FC<{
     if (item) {
       setIsLoading(false);
     }
-  }, [item,initialIsLoading]);
+  }, [item]);
   
   const video_url = item?.metadata?.properties?.media?.type === "video/mp4";
 

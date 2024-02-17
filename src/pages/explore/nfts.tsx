@@ -18,7 +18,6 @@ const ExplorePage = () => {
   const sortBy = router.query.NFTSort as string || 'TIMESTAMP_LISTED_DESC';
 
   useEffect(() => {
-    // Charger les données initiales
     setIsLoading(true);
     fetch(`/api/nfts?limit=${DEFAULT_LIMIT}&offset=${offset}&sortBy=${sortBy}`)
       .then((res) => res.json())
