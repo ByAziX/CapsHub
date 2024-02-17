@@ -31,12 +31,16 @@ const IndexPage = () => {
   useEffect(() => {
     const fetchNFTs = async () => {
       try {
+        setIsLoadingNFTs(true);
         const res = await fetch('/api/nfts?limit=6&offset=0');
         const data = await res.json();
         setNfts(data.nfts);
         setLastNft(data.nfts[0]); // Assumant que le premier NFT est le dernier listé
+        
       } catch (error) {
         console.error("Error fetching NFTs:", error);
+        setIsLoadingNFTs(true);
+
       } finally {
         setIsLoadingNFTs(false);
       }
@@ -49,12 +53,17 @@ const IndexPage = () => {
   useEffect(() => {
     const fetchCollections = async () => {
       try {
+        setIsLoadingCollections(true);
+
         const res = await fetch('/api/collections?limit=6&offset=0');
         const data = await res.json();
         setCollections(data.collections);
+
       } catch (error) {
         console.error("Error fetching collections:", error);
-      } finally {
+        setIsLoadingCollections(true);
+
+      }finally {
         setIsLoadingCollections(false);
       }
     };

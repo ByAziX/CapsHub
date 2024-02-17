@@ -29,7 +29,7 @@ const NFTCard: React.FC<{
       setIsLoading(false);
     }
   }, [item]);
-
+  
   const video_url = item?.metadata?.properties?.media?.type === "video/mp4";
 
   return (
@@ -50,9 +50,8 @@ const NFTCard: React.FC<{
       flexDirection="column" // Orientation verticale
     >
       <Box position="relative" height={width} overflow="hidden">
-        {isLoading ? (
-          <Skeleton height={width} />
-        ) : video_url ? (
+        <Skeleton isLoaded={!isLoading} height={width} >
+        {video_url ? (
           <iframe
             title={item?.metadata?.title || 'NFT Video'}
             src={item?.mediaUrl}
@@ -71,6 +70,7 @@ const NFTCard: React.FC<{
             fill={true}
           />
         )}
+        </Skeleton>
       </Box>
       <VStack p="2" align="left" spacing={0}>
         <Skeleton isLoaded={!isLoading}>

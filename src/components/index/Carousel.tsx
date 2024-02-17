@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Box, IconButton, Flex, Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
+import { Box, IconButton, Flex } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 const Carousel = ({ items, CardComponent, isLoading }) => {
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(items.length > 0);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   useEffect(() => {
     const checkScrollButtons = () => {
@@ -17,10 +17,14 @@ const Carousel = ({ items, CardComponent, isLoading }) => {
     };
 
     checkScrollButtons();
+    window.addEventListener('resize', checkScrollButtons);
     const scrollElement = scrollRef.current;
     scrollElement.addEventListener('scroll', checkScrollButtons, { passive: true });
 
-    return () => scrollElement.removeEventListener('scroll', checkScrollButtons);
+    return () => {
+      window.removeEventListener('resize', checkScrollButtons);
+      scrollElement.removeEventListener('scroll', checkScrollButtons);
+    };
   }, [items.length]);
 
   const scroll = (direction) => {
@@ -28,6 +32,8 @@ const Carousel = ({ items, CardComponent, isLoading }) => {
     scrollRef.current.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
   };
 
+  // Nombre de cartes de remplacement à afficher si les items sont vides
+  const placeholderCount = 6;
 
   return (
     <Flex alignItems="center" justifyContent="center" position="relative" w="full">
@@ -54,14 +60,13 @@ const Carousel = ({ items, CardComponent, isLoading }) => {
           },
         }}
         sx={{
-          scrollbarWidth: 'none', // Pour les navigateurs qui supportent cette propriété, comme Firefox.
-          msOverflowStyle: 'none',  // Pour les navigateurs Internet Explorer et Edge.
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
         }}
       >
-        
-        {items.map((item, index) => (
+        {(items.length > 0 ? items : Array.from({ length: placeholderCount })).map((item, index) => (
           <Box key={index} p="4">
-            <CardComponent item={item} initialIsLoading={isLoading} />
+            <CardComponent item={item} initialIsLoading={isLoading || items.length === 0} />
           </Box>
         ))}
       </Box>
