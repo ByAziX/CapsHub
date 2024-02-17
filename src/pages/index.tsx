@@ -8,6 +8,7 @@ import {
   Container,
   VStack,
   useColorModeValue,
+  Skeleton,
 } from '@chakra-ui/react';
 import { CollectionEntity, NFTEntity } from '../interfaces/interfaces';
 import Carousel from '../components/index/Carousel';
@@ -103,7 +104,7 @@ const IndexPage = () => {
         </Button>
       </Flex>
     </VStack>
-    {lastNft && (
+
       <Box
         maxW={{ md: 'sm' }} // Limiter la largeur maximale de la Box pour le NFTCard
       >
@@ -113,7 +114,7 @@ const IndexPage = () => {
           initialIsLoading={isLoadingNFTs}
         />
       </Box>
-    )}
+
   </Flex>
 
       <Heading size="lg" display="flex" alignItems="center" mb={4}>
