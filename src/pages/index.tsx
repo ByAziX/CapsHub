@@ -111,6 +111,8 @@ const IndexPage = () => {
         <NFTCard
           key={lastNft?.nftId}
           item={lastNft}
+          width="300px"
+          height="440px"
           initialIsLoading={isLoadingNFTs}
         />
       </Box>
