@@ -29,8 +29,6 @@ async function fetchGraphQL<T>(query: string, variables?: Record<string, any>): 
   return request<T>(process.env.GRAPHQL_ENDPOINT!, query, variables);
 }
 
-
-
 export const getCollections = async (limit = 10, offset = 0): Promise<{ collections: CollectionEntity[], totalCount: number }> => {
   const cacheKey = `collections:${limit}:${offset}`;
   return fetchCachedData<{ collections: CollectionEntity[], totalCount: number }>(cacheKey, async () => {

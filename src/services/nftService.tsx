@@ -191,14 +191,15 @@ export async function getNFTfromCollection(collectionId: string, limit = 10, off
     }
   `;
 
-  const variables = { collectionId, first: limit, offset, sortBy };
-  const response = await fetchGraphQL<NFTResponse>(gqlQuery, variables);
-  const nfts = await Promise.all(
-    response.nftEntities.nodes.map(async (nft) => {
-      const { metadata, mediaUrl } = await fetchIPFSMetadata(nft.offchainData);
-      return { ...nft, metadata, mediaUrl };
-    })
+  const variables = { collectionid: collectionId, first: limit, offset, sortBy };
+    const response = await fetchGraphQL<NFTResponse>(gqlQuery, variables);
+    const nfts = await Promise.all(
+      response.nftEntities.nodes.map(async (nft) => {
+        const { metadata, mediaUrl } = await fetchIPFSMetadata(nft.offchainData);
+        return { ...nft, metadata, mediaUrl };
+      })
+    );
+    return { nfts, totalCount: response.nftEntities.totalCount };
+  }
   );
-  return { nfts, totalCount: response.nftEntities.totalCount };
-}, 3600);
 }
