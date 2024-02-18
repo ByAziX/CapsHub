@@ -13,10 +13,13 @@ import {
 } from '@chakra-ui/react';
 import { FaDotCircle, FaWallet } from 'react-icons/fa'; // Importer des icônes
 import { useWalletConnect } from '@/components/navbar/WalletConnectProvider';
+import { usePolkadot } from '@/components/navbar/PolkadotProvider';
 
-const WalletModal = ({ isOpen, onClose, onConnect }) => {
+
+const WalletModal = ({ isOpen, onClose }) => {
   const buttonBg = useColorModeValue('purple.500', 'purple.200');
   const buttonText = useColorModeValue('white', 'gray.800');
+  const { connectPolkadot } = usePolkadot();
   const { connect } = useWalletConnect();
 
   return (
@@ -33,7 +36,7 @@ const WalletModal = ({ isOpen, onClose, onConnect }) => {
               bg={buttonBg} 
               color={buttonText} 
               _hover={{ bg: 'purple.600' }}
-              onClick={() => onConnect('polkadot.js')}
+              onClick={() => [connectPolkadot(), onClose()]}
             >
               Polkadot.js
             </Button>
