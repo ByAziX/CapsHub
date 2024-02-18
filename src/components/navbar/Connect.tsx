@@ -29,11 +29,10 @@ import { usePolkadotConnect } from './PolkadotProvider';
 export const Connect = () => {
   const buttonHoverBg = useColorModeValue('purple.500', 'purple.200');
   const buttonActiveBg = useColorModeValue('purple.700', 'purple.400');
-  const { accounts, defaultAccount, error, loading, disconnectPolkadot } = usePolkadotConnect();
+  const { accounts, defaultAccount, disconnectPolkadot } = usePolkadotConnect();
 
-  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { address, listNFTFunction, unlistNFTFunction, disconnect } = useWalletConnect();
+  const { address, disconnect } = useWalletConnect();
   const addressWallet = address || accounts?.[0]?.address || defaultAccount?.address || '';
   const { hasCopied, onCopy } = useClipboard(address || accounts?.[0]?.address || defaultAccount?.address);
 
@@ -48,7 +47,6 @@ export const Connect = () => {
   
   }
   
-
   return (
     <VStack spacing={4}>
       {addressWallet ? (

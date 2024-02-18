@@ -18,14 +18,16 @@ const PolkadotProviderNoSSR = dynamic(() => import('../components/navbar/Polkado
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <WalletConnectProvider>
       <PolkadotProviderNoSSR>
+
+      <WalletConnectProvider>
 
       <NavBar />
       <Component {...pageProps} />
       <Footer />
-      </PolkadotProviderNoSSR>
       </WalletConnectProvider>
+      </PolkadotProviderNoSSR>
+
     </ChakraProvider>
 
   );

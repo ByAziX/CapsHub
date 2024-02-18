@@ -22,6 +22,9 @@ import {
 import { getNftData } from '../../services/nftService';
 import NextLink from 'next/link';
 import { useWalletConnect } from '../../components/navbar/WalletConnectProvider';
+import dynamic from 'next/dynamic';
+import { usePolkadotConnect } from '../../components/navbar/PolkadotProvider';
+
 
 
 
@@ -32,6 +35,10 @@ const NFTDetailsPage = ({ nft }) => {
   const { buyNftFunction } = useWalletConnect();
   const { address,listNFTFunction,unlistNFTFunction } = useWalletConnect();
   const [listingPrice, setListingPrice] = useState<number>(10);
+  const { accounts, defaultAccount } = usePolkadotConnect();
+
+
+  
 
 
   if (!nft) {
@@ -119,7 +126,7 @@ const NFTDetailsPage = ({ nft }) => {
               </Button>
             )}
 
-            {nft.isListed && address !== nft.owner && (
+            {(address || defaultAccount) && nft.isListed && address !== nft.owner && (
               <Box display="flex" alignItems="center">
                 <Button colorScheme="purple" mr={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
                   Buy Now
