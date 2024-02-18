@@ -1,30 +1,25 @@
-// nftService.tsx
 import { request, gql } from 'graphql-request';
 import { TernoaIPFS } from 'ternoa-js';
-import cache from './redisClient'; // Utilisez le client de cache amélioré
-import { CollectionEntity, CollectionResponse, NFTEntity, NFTResponse } from '../interfaces/interfaces';
+import cache, {fetchCachedData} from './redisClient';
+import {  NFTEntity, NFTResponse } from '../interfaces/interfaces';
 
-// Initialisez le client IPFS avec vos paramètres d'environnement
 const ipfsClient = new TernoaIPFS(new URL(process.env.IPFS_GATEWAY!), process.env.IPFS_API_KEY);
 
-// Fonction pour récupérer les métadonnées IPFS
 const fetchIPFSMetadata = async (offchainData: string): Promise<{ metadata: any; mediaUrl: string }> => {
   const defaultImageHash = "QmNsqeXwMtpfpHTtCJHMMWp924HrGL85AnVjEEmDHyUkBg";
   const cacheKey = `ipfs:${offchainData}`;
   const cachedData = await cache.get(cacheKey);
 
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
+  if (cachedData) return JSON.parse(cachedData);
 
   try {
     const metadata = await ipfsClient.getFile(offchainData) as any;
-    const mediaUrl = metadata?.properties?.media && metadata.properties.media.hash 
+    const mediaUrl = metadata?.properties?.media?.hash
       ? `${process.env.IPFS_GATEWAY}/ipfs/${metadata.properties.media.hash}`
       : `${process.env.IPFS_GATEWAY}/ipfs/${defaultImageHash}`;
 
-    await cache.set(cacheKey, JSON.stringify({ metadata, mediaUrl }), 10000);
-
+    const cacheValue = JSON.stringify({ metadata, mediaUrl });
+    await cache.set(cacheKey, cacheValue, 10000);
     return { metadata, mediaUrl };
   } catch (error) {
     console.error(`Error fetching metadata from IPFS:`, error);
@@ -32,14 +27,16 @@ const fetchIPFSMetadata = async (offchainData: string): Promise<{ metadata: any;
   }
 };
 
+// Généralisation des requêtes GraphQL
+async function fetchGraphQL<T>(query: string, variables?: Record<string, any>): Promise<T> {
+  return request<T>(process.env.GRAPHQL_ENDPOINT!, query, variables);
+}
+
+
 
 export const getNftData = async (id: string): Promise<NFTEntity> => {
   const cacheKey = `nft:${id}`;
-  const cachedData = await cache.get(cacheKey);
-
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
+  return fetchCachedData<NFTEntity>(cacheKey, async () => {
 
   const gqlQuery = gql`
     {
@@ -71,27 +68,19 @@ export const getNftData = async (id: string): Promise<NFTEntity> => {
     }
   `;
 
-  try {
-    const response = await request<{ nftEntity: NFTEntity }>(process.env.GRAPHQL_ENDPOINT, gqlQuery);
+  const response = await fetchGraphQL<{ nftEntity: NFTEntity }>(gqlQuery);
     const nft = response.nftEntity;
     const { metadata, mediaUrl } = await fetchIPFSMetadata(nft.offchainData);
-
-    await cache.set(cacheKey, JSON.stringify({ ...nft, metadata, mediaUrl }), 10); // Cache pour 1 heure
-    
     return { ...nft, metadata, mediaUrl };
-  } catch (error) {
-    console.error('Error fetching NFT:', error);
-    throw new Error('Error fetching NFT');
-  }
+  });
 };
-// Récupère les NFTs appartenant à un propriétaire spécifique avec pagination
-export const getNFTfromOwner = async (owner: string, limit = 10, offset = 0, sortBy = 'TIMESTAMP_CREATED_DESC'): Promise<{ nfts: NFTEntity[], totalCount: number }> => {
-  const cacheKey = `ownerNFTs:${owner}:${limit}:${offset}`;
-  const cachedData = await cache.get(cacheKey);
 
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
+
+
+// Récupère les NFTs appartenant à un propriétaire spécifique avec pagination
+export async function getNFTfromOwner(owner: string, limit = 10, offset = 0, sortBy = 'TIMESTAMP_CREATED_DESC'): Promise<{ nfts: NFTEntity[], totalCount: number }> {
+  const cacheKey = `ownerNFTs:${owner}:${limit}:${offset}:${sortBy}`;
+  return fetchCachedData<{ nfts: NFTEntity[], totalCount: number }>(cacheKey, async () => {
 
   const gqlQuery = gql`
     query GetNFTsFromOwner($owner: String!, $first: Int!, $offset: Int!) {
@@ -119,36 +108,23 @@ export const getNFTfromOwner = async (owner: string, limit = 10, offset = 0, sor
     }
   `;
 
-  try {
-    const response = await request<NFTResponse>(process.env.GRAPHQL_ENDPOINT!, gqlQuery, {
-      owner,
-      first: limit,
-      offset
-    });
-
-    const nfts = await Promise.all(response.nftEntities.nodes.map(async (nft) => {
-      const { metadata, mediaUrl } = await fetchIPFSMetadata(nft.offchainData);
-      return { ...nft, metadata, mediaUrl };
-    }));
-
-    await cache.set(cacheKey, JSON.stringify({ nfts, totalCount: response.nftEntities.totalCount }), 3600); // Cache pour 1 heure
-
+  const variables = { owner, first: limit, offset, sortBy };
+    const response = await fetchGraphQL<NFTResponse>(gqlQuery, variables);
+    const nfts = await Promise.all(
+      response.nftEntities.nodes.map(async (nft) => {
+        const { metadata, mediaUrl } = await fetchIPFSMetadata(nft.offchainData);
+        return { ...nft, metadata, mediaUrl };
+      })
+    );
     return { nfts, totalCount: response.nftEntities.totalCount };
-  } catch (error) {
-    console.error('Error fetching NFTs from owner:', error);
-    throw new Error('Error fetching NFTs from owner');
-  }
-};
+  }, 3600);
+}
 
 
 // Fonction pour récupérer la liste des NFTs avec pagination
-export const getLastListedNFTs = async (limit = 10, offset = 0,sortBy = 'TIMESTAMP_LISTED_DESC'): Promise<{ nfts: NFTEntity[], totalCount: number }> => {
-  const cacheKey = `nfts:${limit}:${offset}:${sortBy}`;
-  const cachedData = await cache.get(cacheKey);
-
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
+export async function getLastListedNFTs(limit = 10, offset = 0, sortBy = 'TIMESTAMP_LISTED_DESC'): Promise<{ nfts: NFTEntity[], totalCount: number }> {
+  const cacheKey = `lastListedNFTs:${limit}:${offset}:${sortBy}`;
+  return fetchCachedData<{ nfts: NFTEntity[], totalCount: number }>(cacheKey, async () => {
 
   const gqlQuery = gql`
     query GetNFTs($first: Int!, $offset: Int!) {
@@ -171,35 +147,23 @@ export const getLastListedNFTs = async (limit = 10, offset = 0,sortBy = 'TIMESTA
     }
   `;
 
-  try {
-    const response = await request<NFTResponse>(process.env.GRAPHQL_ENDPOINT!, gqlQuery, {
-      first: limit,
-      offset
-    });
-
-    const nfts = await Promise.all(response.nftEntities.nodes.map(async (nft) => {
-      const { metadata, mediaUrl } = await fetchIPFSMetadata(nft.offchainData);
-      return { ...nft, metadata, mediaUrl };
-    }));
-
-    await cache.set(cacheKey, JSON.stringify({ nfts, totalCount: response.nftEntities.totalCount }), 10);
-
+  const variables = { first: limit, offset, sortBy };
+    const response = await fetchGraphQL<NFTResponse>(gqlQuery, variables);
+    const nfts = await Promise.all(
+      response.nftEntities.nodes.map(async (nft) => {
+        const { metadata, mediaUrl } = await fetchIPFSMetadata(nft.offchainData);
+        return { ...nft, metadata, mediaUrl };
+      })
+    );
     return { nfts, totalCount: response.nftEntities.totalCount };
-  } catch (error) {
-    console.error('Error fetching NFTs:', error);
-    throw new Error('Error fetching NFTs');
-  }
-};
+  }, 3600);
+}
 
 
 // Récupère les NFTs appartenant à un propriétaire spécifique avec pagination
-export const getNFTfromCollection = async (collectionid: string, limit = 10, offset = 0, sortBy = 'PRICE_ROUNDED_ASC'): Promise<{ nfts: NFTEntity[], totalCount: number }> => {
-  const cacheKey = `collectionNFTs:${collectionid}:${limit}:${offset}:${sortBy}`;
-  const cachedData = await cache.get(cacheKey);
-
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
+export async function getNFTfromCollection(collectionId: string, limit = 10, offset = 0, sortBy = 'PRICE_ROUNDED_ASC'): Promise<{ nfts: NFTEntity[], totalCount: number }> {
+  const cacheKey = `collectionNFTs:${collectionId}:${limit}:${offset}:${sortBy}`;
+  return fetchCachedData<{ nfts: NFTEntity[], totalCount: number }>(cacheKey, async () => {
 
   const gqlQuery = gql`
     query GetNFTsFromOwner($collectionid: String!, $first: Int!, $offset: Int!) {
@@ -227,23 +191,14 @@ export const getNFTfromCollection = async (collectionid: string, limit = 10, off
     }
   `;
 
-  try {
-    const response = await request<NFTResponse>(process.env.GRAPHQL_ENDPOINT!, gqlQuery, {
-      collectionid,
-      first: limit,
-      offset
-    });
-
-    const nfts = await Promise.all(response.nftEntities.nodes.map(async (nft) => {
+  const variables = { collectionId, first: limit, offset, sortBy };
+  const response = await fetchGraphQL<NFTResponse>(gqlQuery, variables);
+  const nfts = await Promise.all(
+    response.nftEntities.nodes.map(async (nft) => {
       const { metadata, mediaUrl } = await fetchIPFSMetadata(nft.offchainData);
       return { ...nft, metadata, mediaUrl };
-    }));
-
-    await cache.set(cacheKey, JSON.stringify({ nfts, totalCount: response.nftEntities.totalCount }), 3600); // Cache pour 1 heure
-
-    return { nfts, totalCount: response.nftEntities.totalCount };
-  } catch (error) {
-    console.error('Error fetching NFTs from owner:', error);
-    throw new Error('Error fetching NFTs from owner');
-  }
-};
+    })
+  );
+  return { nfts, totalCount: response.nftEntities.totalCount };
+}, 3600);
+}

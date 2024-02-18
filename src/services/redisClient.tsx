@@ -80,4 +80,14 @@ const cache = {
   }
 };
 
+// Fonction générique pour récupérer et mettre en cache des données
+export async function fetchCachedData<T>(cacheKey: string, fetchFunction: () => Promise<T>, cacheTTL = 3600): Promise<T> {
+  const cachedData = await cache.get(cacheKey);
+  if (cachedData) return JSON.parse(cachedData);
+  
+  const data = await fetchFunction();
+  await cache.set(cacheKey, JSON.stringify(data), cacheTTL);
+  return data;
+}
+
 export default cache;
