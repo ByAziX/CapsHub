@@ -37,6 +37,12 @@ const NFTDetailsPage = ({ nft }) => {
   const [listingPrice, setListingPrice] = useState<number>(10);
   const { accounts, defaultAccount } = usePolkadotConnect();
 
+  // choose the right account
+  const account = address || defaultAccount?.address;
+
+  
+
+
 
   
 
@@ -120,13 +126,13 @@ const NFTDetailsPage = ({ nft }) => {
             </>
           )}
 
-            {address === nft.owner && nft.isListed && (
+            {account && account === nft.owner   && nft.isListed && (
               <Button colorScheme="purple" mr={4} onClick={() => unlistNFTFunction(nft.nftId)}> 
                 Unlist NFT
               </Button>
             )}
 
-            {(address || defaultAccount) && nft.isListed && address !== nft.owner && (
+            {account && nft.isListed && account !== nft.owner && (
               <Box display="flex" alignItems="center">
                 <Button colorScheme="purple" mr={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
                   Buy Now

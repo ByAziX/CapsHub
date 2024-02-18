@@ -58,8 +58,8 @@ export const PolkadotProvider: React.FC<{children: ReactNode}> = ({ children }) 
 
   const disconnectPolkadot = () => {
     setState({ ...initialState });
-
   };
+  
 
   useEffect(() => {
     connectPolkadot();
