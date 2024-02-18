@@ -1,54 +1,63 @@
-import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
-import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+// src/components/navbar/PolkadotProvider.tsx
 
-// Définition des types pour l'état et les fonctions du contexte
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+
 interface PolkadotContextState {
-  accounts: InjectedAccountWithMeta[];
-  defaultAccount: InjectedAccountWithMeta | null;
+  accounts: any[];
+  defaultAccount: any | null;
   error: Error | null;
   loading: boolean;
   connectPolkadot: () => Promise<void>;
-  disconnectPolkadot: () => void;
+  disconnectPolkadot: () => void; // Ajout de la signature de disconnectPolkadot
 }
 
-// Valeurs initiales du contexte
 const initialState: PolkadotContextState = {
   accounts: [],
   defaultAccount: null,
   error: null,
   loading: false,
   connectPolkadot: async () => {},
-  disconnectPolkadot: () => {},
-
+  disconnectPolkadot: () => {}, // Initialisation vide de disconnectPolkadot
 };
 
 const PolkadotContext = createContext<PolkadotContextState>(initialState);
 
-// Provider du contexte
-export const PolkadotProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [state, setState] = useState(initialState);
+export const usePolkadotConnect = (): PolkadotContextState => {
+  const context = useContext(PolkadotContext);
+  if (!context) {
+    throw new Error('usePolkadotConnect must be used within a PolkadotProvider');
+  }
+  return context;
+};
 
-  const connectPolkadot = useCallback(async () => {
+export const PolkadotProvider: React.FC<{children: ReactNode}> = ({ children }) => {
+  const [state, setState] = useState<PolkadotContextState>(initialState);
+
+  const connectPolkadot = async () => {
     setState((prevState) => ({ ...prevState, loading: true }));
     try {
-      const extensions = await web3Enable('my-dapp');
+      const extensions = await web3Enable('my-app');
       if (extensions.length === 0) {
         throw new Error('Please install Polkadot.js extension!');
       }
       const accounts = await web3Accounts();
-      if (accounts.length === 0) {
-        throw new Error('No accounts found in Polkadot.js extension!');
-      }
-      setState({ ...state, accounts, defaultAccount: accounts[0], loading: false, error: null });
+      setState((prevState) => ({
+        ...prevState,
+        accounts,
+        defaultAccount: accounts[0] || null,
+        loading: false,
+        error: null,
+      }));
     } catch (error) {
-      setState({ ...state, error, loading: false });
+      setState((prevState) => ({ ...prevState, error, loading: false }));
     }
-  }, []);
+  };
 
-  const disconnectPolkadot = useCallback(() => {
+  // Fonction pour réinitialiser l'état
+  const disconnectPolkadot = () => {
     setState({ ...initialState });
-  }, []);
+  };
 
   return (
     <PolkadotContext.Provider value={{ ...state, connectPolkadot, disconnectPolkadot }}>
@@ -57,5 +66,4 @@ export const PolkadotProvider: React.FC<{ children: ReactNode }> = ({ children }
   );
 };
 
-// Hook personnalisé pour utiliser le contexte
-export const usePolkadot = () => useContext(PolkadotContext);
+export default PolkadotProvider;

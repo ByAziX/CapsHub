@@ -22,21 +22,20 @@ import NextLink from 'next/link';
 import WalletModal from '../../modals/WalletModal';
 import { FaWallet } from 'react-icons/fa';
 import { useWalletConnect } from './WalletConnectProvider';
-import { usePolkadot } from './PolkadotProvider';
+import { usePolkadotConnect } from './PolkadotProvider';
+
+
 
 export const Connect = () => {
   const buttonHoverBg = useColorModeValue('purple.500', 'purple.200');
   const buttonActiveBg = useColorModeValue('purple.700', 'purple.400');
-  const { accounts, defaultAccount, error, loading, disconnectPolkadot } = usePolkadot();
+  const { accounts, defaultAccount, error, loading, disconnectPolkadot } = usePolkadotConnect();
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { address, listNFTFunction, unlistNFTFunction, disconnect } = useWalletConnect();
   const addressWallet = address || accounts?.[0]?.address || defaultAccount?.address || '';
   const { hasCopied, onCopy } = useClipboard(address || accounts?.[0]?.address || defaultAccount?.address);
-
-
-  
 
 
   const handleDisconnect = () => {
