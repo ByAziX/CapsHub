@@ -66,7 +66,7 @@ const Carousel = ({ items, CardComponent, isLoading }) => {
       >
         {(items.length > 0 ? items : Array.from({ length: placeholderCount })).map((item, index) => (
           <Box key={index} p="4">
-            <CardComponent item={item} initialIsLoading={isLoading || items.length === 0} />
+            <CardComponent item={item} initialIsLoading={isLoading} />
           </Box>
         ))}
       </Box>

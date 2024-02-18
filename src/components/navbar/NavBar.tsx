@@ -1,27 +1,38 @@
-import React from 'react';
-import { Box, Button, Center, Flex, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Text, useColorModeValue, useDisclosure } from '@chakra-ui/react';
+import React, { useContext } from 'react';
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  IconButton,
+  Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  useColorModeValue,
+  useDisclosure
+} from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { DarkModeSwitch } from './DarkModeSwitch';
 import dynamic from 'next/dynamic';
 import NextLink from 'next/link';
 import { FaBoxOpen } from 'react-icons/fa';
-import {PiAddressBookBold} from 'react-icons/pi';
+import { PiAddressBookBold } from 'react-icons/pi';
 import { IoBookSharp } from "react-icons/io5";
 import SearchBar from './SearchBar';
-import WalletActions from './WalletActions'; // Ajustez le chemin selon votre structure de dossier
 
+// Dynamic import for components that rely on window object
+const Connect = dynamic(() => import('./Connect'), { ssr: false });
 
-const Connect = dynamic(() => import('./Connect').then(m => m.Connect), {
-  ssr: false,
-});
-
-const NavBar: React.FC = () => {
-
+const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const bgColor = useColorModeValue('light.bg', 'dark.bg');
   const textColor = useColorModeValue('light.text', 'dark.text');
   const buttonHoverBg = useColorModeValue('purple.500', 'purple.200');
   const buttonActiveBg = useColorModeValue('purple.700', 'purple.400');
+
 
   return (
 
@@ -37,9 +48,9 @@ const NavBar: React.FC = () => {
       <Flex align="center">
         <NextLink href="/" passHref>
           <Flex align="center" cursor="pointer">
-            <Image src="/nft-marketplace-background.webp" alt="Logo" boxSize="30px" mr="3" />
+            <Image src="/DigitalDawn.png" alt="Logo" boxSize="70px" mr="2" />
             <Text fontSize="xl" fontWeight="bold" mr="5">
-              NFT Marketplace
+              DigitalDawn
             </Text>
           </Flex>
         </NextLink>
@@ -67,9 +78,9 @@ const NavBar: React.FC = () => {
         flexBasis={{ base: "100%", md: "auto" }}
         mt={[4, 4, 0, 0]}
       >
-          <SearchBar onSearch={(query: any) => console.log('Searching for:', query)} />
+        <SearchBar onSearch={(query: any) => console.log('Searching for:', query)} />
       </Box>
-      
+
 
       <Flex
         flexBasis={{ base: "100%", md: "auto" }}
@@ -82,9 +93,9 @@ const NavBar: React.FC = () => {
         gap={4}
       >
         <Menu>
-                    <MenuButton as={Button} leftIcon={<FaBoxOpen />} rightIcon={<ChevronDownIcon />} bg="transparent" _hover={{ bg: buttonHoverBg }} _active={{ bg: buttonActiveBg }}>
-                      Explore
-                    </MenuButton>
+          <MenuButton as={Button} leftIcon={<FaBoxOpen />} rightIcon={<ChevronDownIcon />} bg="transparent" _hover={{ bg: buttonHoverBg }} _active={{ bg: buttonActiveBg }}>
+            Explore
+          </MenuButton>
           <MenuList>
             <NextLink href="/explore/nfts" passHref>
               <MenuItem>Explore NFTs</MenuItem>
@@ -94,9 +105,9 @@ const NavBar: React.FC = () => {
             </NextLink>
           </MenuList>
         </Menu>
-        
-        <Button leftIcon={<PiAddressBookBold />}  bg="transparent" _hover={{ bg: buttonHoverBg }} _active={{ bg: buttonActiveBg }}>Create</Button>
-        <Button leftIcon={<IoBookSharp />}  bg="transparent" _hover={{ bg: buttonHoverBg }} _active={{ bg: buttonActiveBg }}>My Collection</Button>
+
+        <Button leftIcon={<PiAddressBookBold />} bg="transparent" _hover={{ bg: buttonHoverBg }} _active={{ bg: buttonActiveBg }}>Create</Button>
+        <Button leftIcon={<IoBookSharp />} bg="transparent" _hover={{ bg: buttonHoverBg }} _active={{ bg: buttonActiveBg }}>My Collection</Button>
         <Connect />
         <DarkModeSwitch />
       </Flex>

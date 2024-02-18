@@ -21,6 +21,7 @@ import { CopyIcon, CloseIcon } from '@chakra-ui/icons';
 import NextLink from 'next/link';
 import WalletModal from '../../modals/WalletModal';
 import { FaWallet } from 'react-icons/fa';
+import { useWalletConnect } from './WalletConnectProvider';
 
 type TExtensionState = {
   data?: {
@@ -44,6 +45,8 @@ export const Connect = () => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { hasCopied, onCopy } = useClipboard(state.data?.defaultAccount.address || '');
+  const { address, listNFTFunction, unlistNFTFunction, disconnect } = useWalletConnect();
+  const addressWallet = address || state.data?.defaultAccount.address;
 
   const handleConnectToWallet = async (walletName: string) => {
     setState({ ...initialExtensionState, loading: true });
@@ -58,9 +61,6 @@ export const Connect = () => {
           if (injectedExtensions.length === 0) throw new Error('Please install Polkadot.js extension!');
           accounts = await web3Accounts();
           if (accounts.length === 0) throw new Error('No accounts found in Polkadot.js extension!');
-          break;
-        case 'Ternoa':
-          // Connect to Ternoa wallet
           break;
         default:
           throw new Error(`Unsupported wallet: ${walletName}`);
@@ -90,18 +90,27 @@ export const Connect = () => {
   };
 
 
-  const handleDisconnect = () => setState(initialExtensionState);
+  const handleDisconnect = () => {
+    if (state.data) {
+      setState(initialExtensionState);
+    }
+    else if (address) {
+      disconnect();
+    }
+  
+  }
+  
 
   return (
     <VStack spacing={4}>
-      {state.data ? (
+      {addressWallet ? (
         <HStack spacing={4}>
-          <NextLink href={`/profile/${state.data.defaultAccount.address}`} passHref>
-            <Avatar name={beautifyAddress(state.data.defaultAccount.address)} />
+          <NextLink href={`/profile/${addressWallet}`} passHref>
+            <Avatar name={beautifyAddress(addressWallet)} />
           </NextLink>
           <VStack align="start">
-            <Text fontSize="lg">Hello, {beautifyAddress(state.data.defaultAccount.address)}</Text>
-            <Tooltip label={state.data.defaultAccount.address} aria-label="Full address">
+            <Text fontSize="lg">Hello, {beautifyAddress(addressWallet)}</Text>
+            <Tooltip label={addressWallet} aria-label="Full address">
               <Text fontSize="sm" cursor="pointer" onClick={onCopy}>{hasCopied ? "Copied!" : "Click to copy"}</Text>
             </Tooltip>
           </VStack>

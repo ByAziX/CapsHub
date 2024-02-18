@@ -37,6 +37,7 @@ interface WalletConnectContextType {
   address: string | undefined;
   listNFTFunction: (nftId: string, nftPrice: number) => Promise<void>;
   unlistNFTFunction: (nftId: string) => Promise<void>;
+  disconnect: () => Promise<void>;
 }
 
 // Création du contexte avec un type spécifié
@@ -391,7 +392,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
 
   
   return (
-    <WalletConnectContext.Provider value={{ connect,buyNftFunction,listNFTFunction,unlistNFTFunction,address}}>
+    <WalletConnectContext.Provider value={{ connect,buyNftFunction,listNFTFunction,unlistNFTFunction,address,disconnect}}>
       {children}
     </WalletConnectContext.Provider>
   );
