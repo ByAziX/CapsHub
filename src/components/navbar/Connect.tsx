@@ -64,7 +64,7 @@ export const Connect = () => {
         </HStack>
       ) : (
         <Button leftIcon={<Icon as={FaWallet} />} onClick={onOpen} bg="transparent" _hover={{ bg: buttonHoverBg }} _active={{ bg: buttonActiveBg }}>
-          Connect
+          Login
         </Button>
       )}
       {isOpen && <WalletModal isOpen={isOpen} onClose={onClose} />}

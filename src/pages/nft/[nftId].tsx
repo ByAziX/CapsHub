@@ -142,6 +142,12 @@ const NFTDetailsPage = ({ nft }) => {
                 </Button>
               </Box>
             )}
+            {!account && (
+             <Alert status="error" borderRadius="md">
+             <AlertIcon />
+             You must be logged in to interact with the NFT.
+                        </Alert>
+            )}
             </Flex>
           </VStack>
         </Box>
