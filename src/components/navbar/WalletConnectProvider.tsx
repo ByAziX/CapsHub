@@ -22,13 +22,11 @@ const DEFAULT_APP_METADATA = {
 
 const TERNOA_ALPHANET_CHAIN = "ternoa:18bcdb75a0bba577b084878db2dc2546";
 
-
-
 const requiredNamespaces = {
   ternoa: {
     chains: [TERNOA_ALPHANET_CHAIN],
-    events: ["event_test"],
-    methods: ["sign_message"],
+    events: ['ternoa:1'],
+    methods: ['sign_message','sign_transaction']
   },
 };
 
@@ -280,7 +278,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_message',
+          method: 'sign_transaction',
           params: {
             pubKey: address,
             request: {
@@ -324,7 +322,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_message',
+          method: 'sign_transaction',
           params: {
             pubKey: address,
             request: {
@@ -368,7 +366,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_message',
+          method: 'sign_transaction',
           params: {
             pubKey: address,
             request: {
