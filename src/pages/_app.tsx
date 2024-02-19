@@ -17,13 +17,15 @@ import { PolkadotProvider } from '../components/navbar/PolkadotProvider';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <PolkadotProvider>
       <WalletConnectProvider>
+
+      <PolkadotProvider>
       <NavBar />
       <Component {...pageProps} />
       <Footer />
-      </WalletConnectProvider>
       </PolkadotProvider>
+      </WalletConnectProvider>
+
 
     </ChakraProvider>
 

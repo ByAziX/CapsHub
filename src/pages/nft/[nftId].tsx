@@ -24,28 +24,19 @@ import NextLink from 'next/link';
 import { useWalletConnect } from '../../components/navbar/WalletConnectProvider';
 import dynamic from 'next/dynamic';
 import { usePolkadotConnect } from '../../components/navbar/PolkadotProvider';
-
-
+import { useWalletActions } from '../../hooks/useWalletActions';
 
 
 const NFTDetailsPage = ({ nft }) => {
   const bgColor = useColorModeValue('light.bg', 'dark.bg');
   const textColor = useColorModeValue('light.text', 'dark.text');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
-  const { buyNftFunction } = useWalletConnect();
-  const { address,listNFTFunction,unlistNFTFunction } = useWalletConnect();
   const [listingPrice, setListingPrice] = useState<number>(10);
-  const { accounts, defaultAccount } = usePolkadotConnect();
+  const { listNFT, unlistNFT, buyNFT,address,defaultAccount,signMessageVerif } = useWalletActions();
+
 
   // choose the right account
   const account = address || defaultAccount?.address;
-
-  
-
-
-
-  
-
 
   if (!nft) {
     // If the NFT data is not yet loaded, display a loading state
@@ -120,21 +111,21 @@ const NFTDetailsPage = ({ nft }) => {
                 mr={4}
                 mb={4}
               />
-              <Button colorScheme="purple" onClick={() => listNFTFunction(nft.nftId, listingPrice)}>
+              <Button colorScheme="purple" onClick={() => listNFT(nft.nftId, listingPrice)}>
                 List NFT
               </Button>
             </>
           )}
 
             {account && account === nft.owner   && nft.isListed && (
-              <Button colorScheme="purple" mr={4} onClick={() => unlistNFTFunction(nft.nftId)}> 
+              <Button colorScheme="purple" mr={4} onClick={() => unlistNFT(nft.nftId)}> 
                 Unlist NFT
               </Button>
             )}
 
             {account && nft.isListed && account !== nft.owner && (
               <Box display="flex" alignItems="center">
-                <Button colorScheme="purple" mr={2} onClick={() => buyNftFunction(nft.nftId, nft.priceRounded)}>
+                <Button colorScheme="purple" mr={2} onClick={() => buyNFT(nft.nftId, nft.priceRounded)}>
                   Buy Now
                 </Button>
                 <Button variant="outline" colorScheme="purple">
@@ -148,6 +139,11 @@ const NFTDetailsPage = ({ nft }) => {
              You must be logged in to interact with the NFT.
                         </Alert>
             )}
+            <Box display="flex" alignItems="center">
+              <Button colorScheme="purple" mr={2} onClick={() => signMessageVerif()}>
+Vérif              </Button>
+
+            </Box>
             </Flex>
           </VStack>
         </Box>

@@ -22,11 +22,13 @@ const DEFAULT_APP_METADATA = {
 
 const TERNOA_ALPHANET_CHAIN = "ternoa:18bcdb75a0bba577b084878db2dc2546";
 
+
+
 const requiredNamespaces = {
   ternoa: {
     chains: [TERNOA_ALPHANET_CHAIN],
-    events: ['ternoa:1'],
-    methods: ['sign_message','sign_transaction']
+    events: ["event_test"],
+    methods: ["sign_message"],
   },
 };
 
@@ -38,6 +40,7 @@ interface WalletConnectContextType {
   listNFTFunction: (nftId: string, nftPrice: number) => Promise<void>;
   unlistNFTFunction: (nftId: string) => Promise<void>;
   disconnect: () => Promise<void>;
+  signMessage: () => Promise<void>;
 }
 
 // Création du contexte avec un type spécifié
@@ -277,7 +280,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_transaction',
+          method: 'sign_message',
           params: {
             pubKey: address,
             request: {
@@ -321,7 +324,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_transaction',
+          method: 'sign_message',
           params: {
             pubKey: address,
             request: {
@@ -365,7 +368,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         chainId: TERNOA_ALPHANET_CHAIN,
         topic: session.topic,
         request: {
-          method: 'sign_transaction',
+          method: 'sign_message',
           params: {
             pubKey: address,
             request: {
@@ -392,7 +395,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
 
   
   return (
-    <WalletConnectContext.Provider value={{ connect,buyNftFunction,listNFTFunction,unlistNFTFunction,address,disconnect}}>
+    <WalletConnectContext.Provider value={{ connect,buyNftFunction,listNFTFunction,unlistNFTFunction,address,disconnect,signMessage }}>
       {children}
     </WalletConnectContext.Provider>
   );

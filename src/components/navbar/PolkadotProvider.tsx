@@ -57,13 +57,10 @@ export const PolkadotProvider: React.FC<{children: ReactNode}> = ({ children }) 
   };
 
   const disconnectPolkadot = () => {
-    setState({ ...initialState });
+    setState(null);
   };
   
 
-  useEffect(() => {
-    connectPolkadot();
-  }, []);
 
   return (
     <PolkadotContext.Provider value={{ ...state, connectPolkadot, disconnectPolkadot }}>

@@ -117,7 +117,7 @@ export async function getNFTfromOwner(owner: string, limit = 10, offset = 0, sor
       })
     );
     return { nfts, totalCount: response.nftEntities.totalCount };
-  }, 3600);
+  }, 10);
 }
 
 
