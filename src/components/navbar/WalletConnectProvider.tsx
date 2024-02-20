@@ -223,20 +223,19 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     }
   }, [checkPersistedState, subscribeToEvents]);
 
-  const request = async (hash: string) => {
+  const request = async (hashTX: string) => {
     if (client) {
-      return client.request<string>({
+      return client.request({
         chainId:"ternoa:18bcdb75a0bba577b084878db2dc2546",
-        topic: session!.topic,
+        topic: session.topic,
         request: {
           method: "sign_message",
           params: {
             pubKey: account,
             request: {
-              nonce: 1,
-              validity: null,
+              nonce: -1,
               submit: true,
-              hash,
+              hash: hashTX
             },
           },
         },
