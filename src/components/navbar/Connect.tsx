@@ -32,16 +32,16 @@ export const Connect = () => {
   const { accounts, defaultAccount, disconnectPolkadot } = usePolkadotConnect();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { address, disconnect } = useWalletConnect();
-  const addressWallet = address || accounts?.[0]?.address || defaultAccount?.address || '';
-  const { hasCopied, onCopy } = useClipboard(address || accounts?.[0]?.address || defaultAccount?.address);
+  const { account, disconnect } = useWalletConnect();
+  const addressWallet = account || accounts?.[0]?.address || defaultAccount?.address || '';
+  const { hasCopied, onCopy } = useClipboard(account || accounts?.[0]?.address || defaultAccount?.address);
 
 
   const handleDisconnect = () => {
     if (accounts?.[0]?.address || defaultAccount?.address) {
       disconnectPolkadot();
     }
-    else if (address) {
+    else if (account) {
       disconnect();
     }
   

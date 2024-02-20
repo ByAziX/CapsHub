@@ -32,7 +32,8 @@ const NFTDetailsPage = ({ nft }) => {
   const textColor = useColorModeValue('light.text', 'dark.text');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const [listingPrice, setListingPrice] = useState<number>(10);
-  const { listNFT, unlistNFT, buyNFT,address,defaultAccount,signMessageVerif } = useWalletActions();
+  const { listNFT, unlistNFT, buyNFT,address,defaultAccount } = useWalletActions();
+  const { listNFTFunction, unlistNFTFunction,buyNftFunction } = useWalletConnect();
 
 
   // choose the right account
@@ -111,7 +112,7 @@ const NFTDetailsPage = ({ nft }) => {
                 mr={4}
                 mb={4}
               />
-              <Button colorScheme="purple" onClick={() => listNFT(nft.nftId, listingPrice)}>
+              <Button colorScheme="purple" onClick={() => listNFTFunction(nft.nftId, listingPrice)}>
                 List NFT
               </Button>
             </>
@@ -139,11 +140,6 @@ const NFTDetailsPage = ({ nft }) => {
              You must be logged in to interact with the NFT.
                         </Alert>
             )}
-            <Box display="flex" alignItems="center">
-              <Button colorScheme="purple" mr={2} onClick={() => signMessageVerif()}>
-Vérif              </Button>
-
-            </Box>
             </Flex>
           </VStack>
         </Box>

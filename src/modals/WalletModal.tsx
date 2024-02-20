@@ -20,7 +20,7 @@ const WalletModal = ({ isOpen, onClose }) => {
   const buttonBg = useColorModeValue('purple.500', 'purple.200');
   const buttonText = useColorModeValue('white', 'gray.800');
   const { connectPolkadot } = usePolkadotConnect();
-  const { connect } = useWalletConnect();
+  const { connect,pairings } = useWalletConnect();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -50,7 +50,10 @@ const WalletModal = ({ isOpen, onClose }) => {
               bg={buttonBg} 
               color={buttonText} 
               _hover={{ bg: 'purple.600' }}
-              onClick={() => [connect(), onClose()]}
+              onClick={async () => {
+                await connect(pairings);
+                onClose();
+              }}
             >
               WalletConnect
             </Button>

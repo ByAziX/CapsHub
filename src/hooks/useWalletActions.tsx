@@ -3,7 +3,7 @@ import { useWalletConnect } from '../components/navbar/WalletConnectProvider';
 import { usePolkadotConnect } from '../components/navbar/PolkadotProvider';
 
 export const useWalletActions = () => {
-  const { address, buyNftFunction, listNFTFunction, unlistNFTFunction,signMessage } = useWalletConnect();
+  const { account: address, listNFTFunction, unlistNFTFunction,buyNftFunction } = useWalletConnect();
   const { defaultAccount } = usePolkadotConnect();
   const [walletType, setWalletType] = useState<string | null>(null);
   
@@ -44,13 +44,6 @@ export const useWalletActions = () => {
     }
   };
 
-  const signMessageVerif = () => {
-    if (walletType === 'walletConnect') {
-      signMessage();
-    } else if (walletType === 'polkadot') {
-      console.log('Polkadot sign here');
-    }
-  }
-
-  return { listNFT, unlistNFT, buyNFT, setWalletType, address, defaultAccount,signMessageVerif };
+  
+  return { listNFT, unlistNFT, buyNFT, setWalletType, address, defaultAccount };
 };
