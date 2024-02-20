@@ -33,8 +33,6 @@ const NFTDetailsPage = ({ nft }) => {
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const [listingPrice, setListingPrice] = useState<number>(10);
   const { listNFT, unlistNFT, buyNFT,address,defaultAccount } = useWalletActions();
-  const { listNFTFunction, unlistNFTFunction,buyNftFunction } = useWalletConnect();
-
 
   // choose the right account
   const account = address || defaultAccount?.address;
@@ -112,7 +110,7 @@ const NFTDetailsPage = ({ nft }) => {
                 mr={4}
                 mb={4}
               />
-              <Button colorScheme="purple" onClick={() => listNFTFunction(nft.nftId, listingPrice)}>
+              <Button colorScheme="purple" onClick={() => listNFT(nft.nftId, listingPrice)}>
                 List NFT
               </Button>
             </>

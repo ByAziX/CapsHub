@@ -224,7 +224,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
 
   const request = async (hashTX: string) => {
     if (client) {
-      return client.request({
+      return await client.request({
         chainId:"ternoa:18bcdb75a0bba577b084878db2dc2546",
         topic: session.topic,
         request: {
