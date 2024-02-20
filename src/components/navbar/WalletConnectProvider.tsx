@@ -16,12 +16,11 @@ import { buyNftTx, initializeApi, listNftTx, unlistNftTx } from "ternoa-js";
 
 
 const DEFAULT_APP_METADATA = {
-  name: "Ternoa HUB",
-  description: "Ternoa HUB dApp",
+  name: "CapsHUB",
+  description: "Caps HUB dApp",
   url: "https://hub.ternoa.network/",
   icons: ["https://www.ternoa.com/favicon.ico"],
 };
-
 
 interface WalletConnectContextType {
   pairings: PairingTypes.Struct[];
@@ -34,7 +33,7 @@ interface WalletConnectContextType {
   session?: SessionTypes.Struct;
   connect: (pairing: any) => Promise<SessionTypes.Struct | null>;
   disconnect: () => Promise<void>;
-  request: (hash: string) => Promise<string>;
+  request: (hashTX: string) => Promise<any>;
   isCreatingUri: boolean;
   listNFTFunction: (nftId: string, nftPrice: number) => Promise<void>;
   unlistNFTFunction: (nftId: string) => Promise<void>;
@@ -209,7 +208,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
       const _client = await Client.init({
         logger: "debug",
         relayUrl: "wss://wallet-connectrelay.ternoa.network/",
-        projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
+        projectId: "85f16beb581a579b42b07358e7d51f77",
         metadata: DEFAULT_APP_METADATA,
       });
       console.log("CREATED CLIENT: ", _client);
@@ -249,12 +248,15 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
     if (typeof client === "undefined") {
       throw new Error("WalletConnect is not initialized");
     }
+    console.log(client);
+
     if (typeof session === "undefined") {
       throw new Error("Session not connected");
     }
     await initializeApi("wss://alphanet.ternoa.com");
     const tx = await listNftTx(nftId, 386, nftPrice);
     request(tx);
+    
 
   }, [client, session, request]);
 
