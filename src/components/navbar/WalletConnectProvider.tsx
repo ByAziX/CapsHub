@@ -11,8 +11,16 @@ import Client from "@walletconnect/sign-client";
 import { isMobile as checkIsMobile } from "@walletconnect/legacy-utils";
 import { ERROR } from "@walletconnect/utils";
 import { PairingTypes, SessionTypes } from "@walletconnect/types";
-import QRCodeModal from "@walletconnect/legacy-modal";
 import { buyNftTx, initializeApi, listNftTx, unlistNftTx } from "ternoa-js";
+
+import { Web3Modal } from "@web3modal/standalone";
+
+const web3Modal = new Web3Modal({
+  projectId: "e8f6f7d41ff88cd96a21ce580f018401",
+  themeMode: "light",
+  walletConnectVersion: 2,
+});
+
 
 
 const DEFAULT_APP_METADATA = {
@@ -113,7 +121,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
         if (uri) {
           if (!isMobile) {
             console.log("URI:", uri);
-            QRCodeModal.open(uri, () => {});
+            web3Modal.openModal({ uri });
             setIsConnecting(true);
           } else {
             window.location.replace(`ternoa-wallet://wc?uri=${uri}`);
