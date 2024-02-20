@@ -7,12 +7,14 @@ import {
   useRef,
   useContext,
 } from "react";
-import Client from "@walletconnect/sign-client";
+import SignClient from "@walletconnect/sign-client";
 import { isMobile as checkIsMobile } from "@walletconnect/legacy-utils";
-import { ERROR } from "@walletconnect/utils";
 import { PairingTypes, SessionTypes } from "@walletconnect/types";
-import QRCodeModal from "@walletconnect/legacy-modal";
+import { WalletConnectModal } from '@walletconnect/modal'
+
 import { buyNftTx, initializeApi, listNftTx, unlistNftTx } from "ternoa-js";
+import { Core } from '@walletconnect/core'
+import QRCodeModal from "@walletconnect/qrcode-modal";
 
 
 const DEFAULT_APP_METADATA = {
@@ -29,7 +31,7 @@ interface WalletConnectContextType {
   isDisconnecting: boolean;
   isConnected: boolean;
   account?: string;
-  client?: Client;
+  client?: SignClient;
   session?: SessionTypes.Struct;
   connect: (pairing: any) => Promise<SessionTypes.Struct | null>;
   disconnect: () => Promise<void>;
@@ -51,17 +53,23 @@ export const useWalletConnect = (): WalletConnectContextType => {
   return context;
 };
 
+const walletConnectModal = new WalletConnectModal({
+  projectId: '85f16beb581a579b42b07358e7d51f77'
+})
+
 // Composant fournisseur
 interface WalletConnectProviderProps {
   children: ReactNode;
 }
 
-
+const core = new Core({
+  projectId: '85f16beb581a579b42b07358e7d51f77'
+})
 
 
 export const WalletConnectProvider: React.FunctionComponent<WalletConnectProviderProps> = ({ children }) => {
   const initialized = useRef<boolean>();
-  const [client, setClient] = useState<Client>();
+  const [client, setClient] = useState<SignClient>();
   const [pairings, setPairings] = useState<PairingTypes.Struct[]>([]);
   const [session, setSession] = useState<SessionTypes.Struct>();
   const [isInitializing, setIsInitializing] = useState<boolean>(false);
@@ -72,6 +80,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
   const [walletConnectModalUri, setWalletConnectModalUri] =
     useState<string | undefined>(undefined);
   const isMobile = checkIsMobile();
+  
 
   const isConnected = !!session;
 
@@ -130,6 +139,8 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
       } finally {
         setIsConnecting(false);
         setIsCreatingUri(false);
+        QRCodeModal.close();
+
         if (!isMobile) {
           setWalletConnectModalUri(undefined);
         }
@@ -150,7 +161,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
       setIsDisconnecting(true);
       await client.disconnect({
         topic: session.topic,
-        reason: ERROR.USER_DISCONNECTED.format(),
+        reason: undefined
       });
       // Reset app state after disconnect.
       reset();
@@ -160,7 +171,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
   }, [client, session]);
 
   const subscribeToEvents = useCallback(
-    async (_client: Client) => {
+    async (_client: SignClient) => {
       if (typeof _client === "undefined") {
         throw new Error("WalletConnect is not initialized");
       }
@@ -180,7 +191,7 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
   );
 
   const checkPersistedState = useCallback(
-    async (_client: Client) => {
+    async (_client: SignClient) => {
       if (typeof _client === "undefined") {
         throw new Error("WalletConnect is not initialized");
       }
@@ -205,7 +216,8 @@ export const WalletConnectProvider: React.FunctionComponent<WalletConnectProvide
   const createClient = useCallback(async () => {
     try {
       setIsInitializing(true);
-      const _client = await Client.init({
+      const _client = await SignClient.init({
+        core,
         logger: "debug",
         relayUrl: "wss://wallet-connectrelay.ternoa.network/",
         projectId: "85f16beb581a579b42b07358e7d51f77",
